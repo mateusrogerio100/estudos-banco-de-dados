@@ -14,3 +14,8 @@ Assim as tabelas de uma aula não se misturam com as de outra.
 Em cada pasta:
 - `teoria.md` — resumo da aula
 - `exercicios.sql` — exercícios resolvidos
+
+## Resumo para a prova
+
+O arquivo **[Resumo_Banco_de_Dados.docx](Resumo_Banco_de_Dados.docx)** junta a teoria de todas as aulas num só lugar.
+Ele é gerado pelo script `ferramentas/gerar_resumo.js` e atualizado a cada aula nova.
