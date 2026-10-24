@@ -103,18 +103,34 @@
 
 6. ONDE PARAMOS / PENDÊNCIAS
 ---------------------------------------------------------------------
-- Aula 02 entregue (teoria + 5 exercícios). Aguardando o Mateus resolver.
-  Correção: conferir no Supabase (aula01.despesa, aula02.*) e nas
-  consultas que ele mandar.
+- Última sessão: 24/10/2026 (sábado de manhã). O Mateus saiu no meio
+  da Aula 02.
+- AULA 02 - situação dos 5 exercícios (aula02/exercicios.sql):
+    Ex.1 (UPDATE em aula01.despesa) ... FEITO e conferido no Supabase.
+    Ex.2 (MESTRES em ordem de nome) ... feito, mas o SELECT não foi
+                                        enviado -> pedir para colar.
+                                        Esperado: 2 linhas (ALESSANDRO, ANDRE).
+    Ex.3 (cargos > 2000, DESC) ........ PAROU AQUI. Esperado: 4 linhas
+                                        (DBA ORACLE 7900, DBA POSTGRESQL 7500,
+                                        ADMINISTRADOR... 2600, ANALISTA DE BI 2300).
+    Ex.4 (IN DOUTOR/MESTRE) ........... a fazer. Esperado: 4 linhas
+                                        (ALEXANDRE, FERNANDO, ALESSANDRO, ANDRE).
+    Ex.5 (DELETE com segurança) ....... a fazer. Conferir no Supabase que
+                                        'Teste' foi inserido e depois apagado
+                                        (aula01.despesa deve voltar a 3 linhas).
+- Dificuldades que apareceram (reforçar):
+    * SELECT sem colunas ("SELECT FROM tabela") -> não mostra nada.
+    * ; no meio do comando (antes do WHERE) -> erro de sintaxe.
+    * Autocompletar: Enter aceita sugestão -> usar Esc.
+    * SET search_path só vale na execução em que está incluído.
+    * Rodar de novo CREATE/ALTER/INSERT -> erro "already exists" ou
+      dados duplicados. Só SELECT pode repetir.
 - Pendências da Aula 01 (cobrar na REVISÃO 1):
     * Exercício 3c: explicar por que "paga" ficou FALSE (DEFAULT).
     * Exercício 4: achar os 2 erros do CREATE TABLE do colega
       (vírgula faltando depois de PRIMARY KEY; vírgula sobrando no fim)
       e criar aula01.receita.
-- aula01.despesa tem 3 dados errados de propósito -> corrigidos com
-  UPDATE no exercício 1 da Aula 02:
-    id 2 Conta de luz: data 2026-10-11 -> 2026-11-10
-    id 4 "Alguel" -> "Aluguel"; data 2026-05-11 -> 2026-11-05
+- Próximo passo depois da Aula 02: REVISÃO 1 (Aulas 01 e 02).
 
 7. COMO RETOMAR DEPOIS DE UM /compact
 ---------------------------------------------------------------------

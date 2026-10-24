@@ -33,7 +33,7 @@ SELECT nome FROM aula01.categoria;
 
 -- -----------------------------------------------------
 -- Exercício 3 - Tabela de despesas (dinheiro, data e DEFAULT)
--- Status: tabela OK / dados com 3 correções pendentes (fazer com UPDATE na Aula 02)
+-- Status: tabela OK / os 3 dados errados foram corrigidos com UPDATE na Aula 02 (24/10)
 -- -----------------------------------------------------
 CREATE TABLE aula01.despesa (
   id_despesa  SERIAL PRIMARY KEY,
@@ -65,7 +65,7 @@ SELECT descricao, valor, paga FROM aula01.despesa;
 --  * Um INSERT é "tudo ou nada": se uma linha falha, nenhuma é gravada.
 --  * O SERIAL não volta atrás após erro: os códigos podem ter "buracos" (começou no 2).
 --
--- No banco ficou gravado com erro (corrigir na Aula 02):
+-- No banco tinha ficado gravado com erro (CORRIGIDO na Aula 02):
 --  * id 2 Conta de luz: data 2026-10-11 -> correto 2026-11-10
 --  * id 4 "Alguel": nome -> Aluguel; data 2026-05-11 -> correto 2026-11-05
 
