@@ -1,0 +1,125 @@
+=====================================================================
+ CONTEXTO DO CURSO DE BANCO DE DADOS - MEMÓRIA PARA O CLAUDE
+ (ler este arquivo no início de cada conversa ou depois de um /compact)
+ Última atualização: 24/10/2026
+=====================================================================
+
+1. QUEM É O ALUNO
+---------------------------------------------------------------------
+- Mateus Rogério de Souza. Faz a disciplina de Banco de Dados na faculdade.
+- Professor da disciplina: Fábio Medeiros Faria (PostgreSQL, usa pgAdmin).
+- Trabalha na área contábil/fiscal (Santa Casa de Franca). Entende bem
+  lógica de negócio, mas NÃO é programador e está aprendendo SQL do zero.
+- Analogias com contabilidade/Excel funcionam bem (tabela = aba,
+  chave primária = código que não repete, FK = conta do plano de contas).
+- Preferências: linguagem simples, sempre explicar o "porquê";
+  etapas pequenas, parar ao fim de cada uma; uma pergunta por vez.
+
+2. PAPEL DO CLAUDE
+---------------------------------------------------------------------
+- Ser o professor particular. Montar as aulas SEGUINDO o conteúdo do
+  professor Fábio (slides e scripts que o Mateus envia).
+- Formato de cada aula:
+    1) explicação com exemplos (rodados antes para garantir que funcionam)
+    2) 4 a 5 exercícios para o Mateus fazer sozinho
+    3) correção olhando DIRETO no Supabase dele (ferramenta Supabase MCP)
+- A cada 2 aulas: uma REVISÃO (exercícios misturando as duas aulas).
+- A cada aula nova: atualizar o Word de resumo e subir tudo pro GitHub.
+- Exercícios do professor: ajudar a resolver com explicação comentada
+  (pasta professor/). O Mateus pediu ajuda completa no Exercício 08.
+
+3. FERRAMENTAS E ONDE ESTÁ CADA COISA
+---------------------------------------------------------------------
+- SUPABASE: projeto "Estudos_BD", id = tquaxrrwbznwrqyrpqkp
+  (PostgreSQL 17). Plano free.
+  Organização por SCHEMA (pasta):
+    aula01                    -> exercícios da nossa Aula 01
+    aula02, aula03...         -> uma pasta por aula nossa
+    exercicio_relacionamento  -> Exercício 08 do professor (completo)
+    public                    -> script da aula do professor (Scripts_Aula):
+                                 cargo (7), funcionario (8), telefone,
+                                 dependente, funcionario_telefone,
+                                 funcionario_dependente, produto,
+                                 emprestimo (0 linhas), cliente (0 linhas)
+  Atenção: public.cliente é a do exemplo de EMPRÉSTIMO do professor.
+  No SQL Editor, "SET search_path TO <schema>;" só vale para a execução
+  em que está incluído -> sempre colocar no topo do bloco.
+  O Supabase interpreta datas 'MM/DD/AAAA' (ex.: '10/04/2008' virou 04/out).
+  Ensinar sempre o formato 'AAAA-MM-DD'.
+
+- GITHUB: github.com/mateusrogerio100/estudos-banco-de-dados (público)
+  Separado dos projetos de trabalho (Central de Conciliações etc.).
+  O app do Claude tem acesso SÓ a este repositório.
+    CONTEXTO.txt                  -> este arquivo
+    README.md                     -> índice
+    aulaNN/teoria.md              -> teoria da aula
+    aulaNN/exercicios.sql         -> exercícios + resolução do Mateus
+    professor/exercicioNN.sql     -> exercícios do professor resolvidos
+    ferramentas/gerar_resumo.js   -> gera o Word (node ferramentas/gerar_resumo.js)
+    Resumo_Banco_de_Dados.docx    -> resumo para a prova (enviar ao Mateus)
+  NÃO subir os PDFs/slides do professor (repositório é público).
+
+4. CONTEÚDO DO PROFESSOR JÁ RECEBIDO
+---------------------------------------------------------------------
+- Aula 06: projeto conceitual/lógico/físico; SQL = DDL + DML;
+  CREATE DATABASE (OWNER, TEMPLATE, ENCODING, TABLESPACE, CONNECTION LIMIT);
+  DROP DATABASE; tipos (smallint, integer, bigint, numeric, real, serial,
+  varchar x char x text, date, time, timestamp, interval);
+  CREATE TABLE ([NOT] NULL, UNIQUE, PRIMARY KEY, FOREIGN KEY ... REFERENCES);
+  ALTER TABLE (ADD/DROP COLUMN, ADD/DROP CONSTRAINT); DROP TABLE
+  (não remove tabela referenciada por outra); regras: atributo chave não
+  pode ser removido, coluna NOT NULL não pode ser adicionada em tabela com
+  dados; DML: INSERT, UPDATE, DELETE (cuidado: sem WHERE afeta TUDO), SELECT.
+- Aula 07: modelo FUNCIONARIO / CARGO / TELEFONE / DEPENDENTE +
+  tabelas associativas (PK composta + 2 FKs); CREATE SEQUENCE + NEXTVAL;
+  ordem de inserção (cargo antes de funcionário); SELECT, *, WHERE, AND,
+  <> / !=; ORDER BY ASC/DESC; JOIN ... ON; join pelo WHERE (FROM a, b);
+  AS (alias de coluna e de tabela).
+- Aula 07 parte II: INNER JOIN, LEFT OUTER, RIGHT OUTER, FULL OUTER,
+  NATURAL JOIN, USING (...), CROSS JOIN (produto cartesiano), UNION JOIN
+  (conceito). Exemplo EMPRESTIMO x CLIENTE.
+- Exercício 08: resolvido em professor/exercicio08.sql e rodado no
+  schema exercicio_relacionamento (conferido, tudo certo).
+  Decisão: FK de pedido.id_cliente ficou comentada porque o PDF insere
+  pedido do cliente 15 (inexistente) - confirmar com o professor.
+
+5. PLANO DAS NOSSAS AULAS (seguindo a ordem do professor)
+---------------------------------------------------------------------
+  Aula 01  Conceitos, tipos, CREATE TABLE, INSERT, SELECT ......... FEITA
+  Aula 02  WHERE (=, <>, >, <, AND, OR, IN), ORDER BY,
+           UPDATE e DELETE ........................................ EM ANDAMENTO
+  REVISÃO 1 (Aulas 01 e 02)
+  Aula 03  Estrutura: CREATE DATABASE (teoria), SEQUENCE x SERIAL,
+           restrições (PK, UNIQUE, NOT NULL, DEFAULT, CONSTRAINT nome),
+           ALTER TABLE e DROP TABLE
+  Aula 04  Relacionamentos: chave estrangeira, tabela associativa
+           (PK composta), ordem de criação/inserção, modelo do professor
+  REVISÃO 2 (Aulas 03 e 04)
+  Aula 05  Alias (AS) e INNER JOIN (ON e pelo WHERE), JOIN com 3 tabelas
+  Aula 06  Junções externas: LEFT, RIGHT, FULL, NATURAL, USING, CROSS
+  REVISÃO 3 (Aulas 05 e 06) + simulado de prova
+  Próximas: conforme o material novo do professor (provável: DISTINCT,
+  funções de agregação COUNT/SUM/AVG, GROUP BY, HAVING, subconsultas).
+
+6. ONDE PARAMOS / PENDÊNCIAS
+---------------------------------------------------------------------
+- Aula 02 entregue (teoria + 5 exercícios). Aguardando o Mateus resolver.
+  Correção: conferir no Supabase (aula01.despesa, aula02.*) e nas
+  consultas que ele mandar.
+- Pendências da Aula 01 (cobrar na REVISÃO 1):
+    * Exercício 3c: explicar por que "paga" ficou FALSE (DEFAULT).
+    * Exercício 4: achar os 2 erros do CREATE TABLE do colega
+      (vírgula faltando depois de PRIMARY KEY; vírgula sobrando no fim)
+      e criar aula01.receita.
+- aula01.despesa tem 3 dados errados de propósito -> corrigidos com
+  UPDATE no exercício 1 da Aula 02:
+    id 2 Conta de luz: data 2026-10-11 -> 2026-11-10
+    id 4 "Alguel" -> "Aluguel"; data 2026-05-11 -> 2026-11-05
+
+7. COMO RETOMAR DEPOIS DE UM /compact
+---------------------------------------------------------------------
+- Ler este arquivo. Ver a seção 6 (onde paramos).
+- Conferir o estado real no Supabase antes de corrigir algo.
+- Ao terminar cada aula: atualizar seção 5 e 6 deste arquivo, gerar o
+  Word, fazer commit e push, e mandar o Word ao Mateus.
+=====================================================================

@@ -26,7 +26,7 @@ function runs(texto) {
     return new TextRun(t);
   });
 }
-const h1 = t => new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun(t)] });
+const h1 = (t, novaPagina) => new Paragraph({ heading: HeadingLevel.HEADING_1, pageBreakBefore: !!novaPagina, children: [new TextRun(t)] });
 const h2 = t => new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun(t)] });
 const bullet = t => new Paragraph({ numbering: { reference: 'bolinhas', level: 0 }, spacing: { after: 60 }, children: runs(t) });
 
@@ -141,6 +141,17 @@ INSERT INTO aula01.membro (nome, data_nasc, renda) VALUES
     ...codigo(`SELECT * FROM aula01.membro;            -- todas as colunas
 SELECT nome, renda FROM aula01.membro;  -- só as colunas escolhidas`),
 
+    h2('7. O que o professor acrescenta (Aula 06 dele)'),
+    p('**Fases de um projeto de banco de dados:** Projeto **Conceitual** (o que o negócio precisa) → Projeto **Lógico** (tabelas, colunas e relacionamentos) → Projeto **Físico** (os comandos SQL no banco escolhido).'),
+    p('**SQL** (Structured Query Language) é a linguagem padrão dos bancos relacionais (padrão ISO desde a década de 80). Ela se divide em grupos:'),
+    ...tabela(['Grupo', 'Para quê', 'Comandos'], [
+      ['**DDL** — Definição', 'Mexe na **estrutura**', '`CREATE`, `ALTER`, `DROP`'],
+      ['**DML** — Manipulação', 'Mexe nos **dados**', '`INSERT`, `UPDATE`, `DELETE`, `SELECT`'],
+    ], [0.3, 0.3, 0.4]),
+    p('**Texto:** `VARCHAR(n)` tem tamanho variável com limite; `CHAR(n)` tem tamanho **fixo** e completa com espaços em branco; `TEXT` não tem limite.'),
+    p('**Data e hora:** `DATE` (só data), `TIME` (só hora), `TIMESTAMP` (data e hora), `INTERVAL` (intervalo de tempo).'),
+    p('**Números inteiros:** `SMALLINT` (2 bytes), `INTEGER` (4 bytes), `BIGINT` (8 bytes). `SERIAL` e `BIGSERIAL` são inteiros numerados automaticamente.'),
+
     ...atencao('Erros mais comuns (olho na prova!)', [
       'Cada coluna do CREATE TABLE termina com vírgula — **menos a última**.',
       'Todo comando termina com `;`.',
@@ -149,6 +160,65 @@ SELECT nome, renda FROM aula01.membro;  -- só as colunas escolhidas`),
       'Data é sempre `\'AAAA-MM-DD\'` (ano, mês, dia).',
       'Se o código tem vários erros, o PostgreSQL mostra **só o primeiro**. Corrija e rode de novo.',
       '`--` começa um comentário: o banco ignora o resto da linha.',
+      'Cada comando que **altera** o banco (`CREATE`, `ALTER`, `INSERT`, `DROP`) roda **uma vez só**. Repetir dá erro ou duplica dados. `SELECT` pode repetir à vontade.',
+    ]),
+  ],
+
+  () => [
+    h1('Aula 02 — WHERE, ORDER BY, UPDATE e DELETE', true),
+
+    h2('1. WHERE — filtrar linhas'),
+    p('O `WHERE` diz **quais linhas** entram no resultado. Só aparecem as linhas em que a condição é verdadeira.'),
+    ...codigo(`SELECT nome, escolaridade
+FROM funcionario
+WHERE escolaridade = 'MESTRE';`),
+    ...tabela(['Operador', 'Significa', 'Exemplo'], [
+      ['`=`', 'igual', "`escolaridade = 'DOUTOR'`"],
+      ['`<>` ou `!=`', 'diferente', "`descricao <> 'PROGRAMADOR'`"],
+      ['`>` `<` `>=` `<=`', 'maior, menor, maior ou igual, menor ou igual', '`valor > 2000`'],
+      ['`AND`', 'as **duas** condições precisam ser verdadeiras', "`valor > 1000 AND valor < 3000`"],
+      ['`OR`', 'basta **uma** ser verdadeira', "`ano = 2004 OR ano = 2005`"],
+      ['`IN (...)`', 'igual a qualquer item da lista (atalho para vários OR)', "`escolaridade IN ('MESTRE', 'DOUTOR')`"],
+      ['`IS NULL`', 'está vazio (**nunca** use `= NULL`)', '`email IS NULL`'],
+    ], [0.22, 0.43, 0.35]),
+
+    h2('2. ORDER BY — ordenar'),
+    ...codigo(`SELECT descricao, valor
+FROM cargo
+ORDER BY valor DESC;           -- DESC = decrescente (maior -> menor)
+
+SELECT nome, escolaridade
+FROM funcionario
+ORDER BY escolaridade, nome;   -- desempate: escolaridade, depois nome`),
+    bullet('`ASC` = crescente (A→Z, menor→maior). É o **padrão**: se não escrever nada, é ASC.'),
+    bullet('`DESC` = decrescente (Z→A, maior→menor).'),
+    bullet('Com várias colunas, a segunda só serve para **desempatar** a primeira.'),
+    p('**Ordem obrigatória das cláusulas:** `SELECT` → `FROM` → `WHERE` → `ORDER BY` (o ORDER BY é sempre o último).'),
+
+    h2('3. UPDATE — alterar dados'),
+    ...codigo(`UPDATE cargo
+SET valor = 2500
+WHERE id_cargo = 1;
+
+-- várias colunas de uma vez: separar por vírgula
+UPDATE funcionario
+SET nome = 'GERALDO HENRIQUE NETO', escolaridade = 'MESTRE'
+WHERE id_funcionario = 1;`),
+
+    h2('4. DELETE — excluir linhas'),
+    ...codigo(`DELETE FROM cargo
+WHERE id_cargo = 7;
+
+DELETE FROM cargo
+WHERE valor > 7000
+   OR valor < 100;`),
+
+    ...atencao('A "bomba" do professor', [
+      '`UPDATE` ou `DELETE` **sem WHERE** atinge **TODAS as linhas** da tabela.',
+      '`UPDATE cargo SET valor = 5000;` → todos os cargos passam a valer 5000.',
+      '`DELETE FROM cargo;` → apaga todos os cargos.',
+      'Boa prática: antes, rode um **SELECT com o mesmo WHERE** e confira quais linhas serão afetadas.',
+      'Filtre pela **chave primária** (`WHERE id = ...`) quando quiser mexer em uma linha só: ela nunca se repete.',
     ]),
   ],
 ];
