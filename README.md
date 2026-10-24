@@ -15,6 +15,12 @@ Em cada pasta:
 - `teoria.md` — resumo da aula
 - `exercicios.sql` — exercícios resolvidos
 
+## Exercícios do professor
+
+| Arquivo | Assunto |
+|---|---|
+| [professor/exercicio08.sql](professor/exercicio08.sql) | Chave estrangeira, JOIN / LEFT / RIGHT / FULL, ALTER TABLE, ORDER BY, alias |
+
 ## Resumo para a prova
 
 O arquivo **[Resumo_Banco_de_Dados.docx](Resumo_Banco_de_Dados.docx)** junta a teoria de todas as aulas num só lugar.
