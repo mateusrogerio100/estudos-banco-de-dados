@@ -88,7 +88,7 @@
   Aula 01  Conceitos, tipos, CREATE TABLE, INSERT, SELECT ......... FEITA
   Aula 02  WHERE (=, <>, >, <, AND, OR, IN), ORDER BY,
            UPDATE e DELETE ........................................ FEITA (26/10)
-  REVISÃO 1 (Aulas 01 e 02)
+  REVISÃO 1 (Aulas 01 e 02) ...................................... EM ANDAMENTO
   Aula 03  Estrutura: CREATE DATABASE (teoria), SEQUENCE x SERIAL,
            restrições (PK, UNIQUE, NOT NULL, DEFAULT, CONSTRAINT nome),
            ALTER TABLE e DROP TABLE
@@ -105,10 +105,20 @@
 ---------------------------------------------------------------------
 - Última sessão: 26/10/2026. AULA 02 CONCLUÍDA (5 exercícios feitos;
   resoluções e erros comentados em aula02/exercicios.sql).
-- PRÓXIMO PASSO: REVISÃO 1 (Aulas 01 e 02) - 4 a 5 exercícios misturando
-  CREATE TABLE, INSERT, SELECT, WHERE/IN, ORDER BY, UPDATE, DELETE.
-  Criar schema revisao01. Incluir as pendências da Aula 01 (abaixo) e
-  reforçar: DELETE sem WHERE x DROP TABLE; OR com condição completa; IN (...).
+- REVISÃO 1 ENTREGUE em 26/10 (revisao01/exercicios.sql). Aguardando o
+  Mateus. Tabela: revisao01.titulo (contas a pagar, 6 títulos, 1 duplicado).
+  Gabarito / resultados esperados (testados):
+    Ex.3a não pagos por vencimento: Papelaria 28/10, Energia 10/11,
+          MedSul 20/11, MedSul 20/11 (4 linhas)
+    Ex.3b IN + valor > 1000, DESC: MedSul 4900, MedSul 4900,
+          Energia 1250.80, Energia 1180.40 (4 linhas)
+    Ex.4  final = 5 títulos; Energia 10/11 pago = TRUE; só 1 MedSul;
+          Papelaria valor 251.90
+    Ex.5b erros: falta vírgula em "fornecedor valor" (vira apelido, SEM
+          erro); OR sem condição completa; ORDER BY sem coluna.
+  Depois da Revisão 1: Aula 03 (estrutura: CREATE DATABASE, SEQUENCE,
+  restrições, ALTER/DROP TABLE). Atualizar o Word com um quadro de
+  erros comuns da revisão.
 - Dificuldades que apareceram (reforçar):
     * SELECT sem colunas ("SELECT FROM tabela") -> não mostra nada.
     * ; no meio do comando (antes do WHERE) -> erro de sintaxe.
@@ -120,7 +130,7 @@
     * WHERE x = 'A' OR 'B'  e  WHERE x = 'A' IN 'B'  (sintaxe do OR/IN).
     * DELETE * FROM (DELETE não leva *); número entre aspas.
     * Achou que DELETE sem WHERE apaga a tabela (apaga as linhas; DROP apaga a tabela).
-- Pendências da Aula 01 (cobrar na REVISÃO 1):
+- Pendências da Aula 01 (incluídas na REVISÃO 1, ex. 1 e 5a):
     * Exercício 3c: explicar por que "paga" ficou FALSE (DEFAULT).
     * Exercício 4: achar os 2 erros do CREATE TABLE do colega
       (vírgula faltando depois de PRIMARY KEY; vírgula sobrando no fim)

@@ -15,6 +15,7 @@ Assim as tabelas de uma aula não se misturam com as de outra.
 |---|---|
 | [aula01](aula01/) | Conceitos básicos, tipos de dados, `CREATE TABLE`, `INSERT`, `SELECT` |
 | [aula02](aula02/) | `WHERE`, `ORDER BY`, `UPDATE`, `DELETE` |
+| [revisao01](revisao01/) | Revisão das Aulas 01 e 02 |
 
 Em cada pasta:
 - `teoria.md` — resumo da aula
