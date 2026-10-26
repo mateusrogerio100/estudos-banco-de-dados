@@ -220,6 +220,26 @@ WHERE valor > 7000
       'Boa prática: antes, rode um **SELECT com o mesmo WHERE** e confira quais linhas serão afetadas.',
       'Filtre pela **chave primária** (`WHERE id = ...`) quando quiser mexer em uma linha só: ela nunca se repete.',
     ]),
+
+    h2('5. DELETE x DROP TABLE'),
+    ...tabela(['Comando', 'É como no Excel...', 'O que sobra'], [
+      ['`DELETE FROM tabela;`', 'apagar todas as linhas, mantendo o cabeçalho', 'a tabela, **vazia**'],
+      ['`DELETE FROM tabela WHERE ...;`', 'apagar só as linhas filtradas', 'a tabela e as outras linhas'],
+      ['`DROP TABLE tabela;`', 'excluir a aba inteira', '**nada**'],
+    ], [0.36, 0.4, 0.24]),
+
+    ...atencao('Erros que apareceram nos exercícios (revise antes da prova!)', [
+      '`SELECT FROM tabela` (sem colunas) não dá erro, mas não mostra nada. Use `*` ou liste as colunas.',
+      '`;` no meio do comando: `SELECT ... ;` e depois `WHERE ...` → erro perto do WHERE. Um `;` só, no **final**.',
+      'Dois comandos sem `;` entre eles → o banco "gruda" os dois e dá erro de sintaxe.',
+      '`ORDER BY DESC` → falta a coluna. Certo: `ORDER BY valor DESC`.',
+      '`WHERE x = \'A\' OR \'B\'` → errado. Cada lado do OR é uma condição completa: `x = \'A\' OR x = \'B\'`.',
+      '`WHERE x = \'A\' IN \'B\'` → errado. O IN usa lista entre parênteses: `x IN (\'A\', \'B\')`.',
+      'Em `ORDER BY escolaridade, nome ASC` o `ASC` vale **só para nome**: cada coluna tem sua direção.',
+      '`DELETE * FROM` → errado. O DELETE apaga sempre a linha inteira, então não leva `*`.',
+      'Número vai **sem aspas**: `WHERE id = 5` (e não `\'5\'`).',
+      'No SQL Editor, com a lista de sugestões aberta, o **Enter aceita a sugestão**. Aperte **Esc** antes.',
+    ]),
   ],
 ];
 
