@@ -28,25 +28,41 @@
 -- -----------------------------------------------------
 -- Exercício 2 - public.funcionario: nome e escolaridade dos MESTRES,
 -- em ordem alfabética de nome
--- Status: feito pelo Mateus, consulta ainda não enviada para correção
---         (resultado esperado: 2 linhas - ALESSANDRO e ANDRE)
+-- Status: FEITO (consulta não enviada para correção)
 -- -----------------------------------------------------
--- (resolução do Mateus)
+-- Modelo de resposta (2 linhas: ALESSANDRO, ANDRE):
+-- SELECT nome, escolaridade FROM funcionario
+-- WHERE escolaridade = 'MESTRE'
+-- ORDER BY nome;
 
 
 -- -----------------------------------------------------
 -- Exercício 3 - public.cargo: descrição e valor dos cargos acima de 2000,
 -- do maior valor para o menor
--- Status: PAROU AQUI (próximo a fazer)
+-- Status: FEITO (26/10)
 -- -----------------------------------------------------
--- (resolução do Mateus)
+-- Tentativa: ORDER BY DESC;  -> erro: faltou dizer POR QUAL COLUNA ordenar.
+-- Certo (4 linhas, começa no DBA ORACLE 7900):
+SELECT descricao, valor FROM cargo
+WHERE valor > 2000
+ORDER BY valor DESC;
 
 
 -- -----------------------------------------------------
 -- Exercício 4 - public.funcionario: nome e escolaridade de quem é
 -- DOUTOR ou MESTRE (usar IN), ordenado por escolaridade e depois nome
+-- Status: FEITO (26/10), depois de 2 tentativas
 -- -----------------------------------------------------
--- (resolução do Mateus)
+-- Tentativa 1: SELECT * FROM funcionario  (sem ;) + outro SELECT -> comandos grudados
+--              WHERE escolaridade = 'DOUTOR' OR 'MESTRE'  -> o lado direito do OR
+--              precisa ser uma condição completa
+-- Tentativa 2: WHERE escolaridade = 'DOUTOR' IN 'MESTRE' -> IN usa lista entre ( )
+-- Certo (4 linhas: ALEXANDRE, FERNANDO, ALESSANDRO, ANDRE):
+SELECT nome, escolaridade FROM funcionario
+WHERE escolaridade IN ('DOUTOR', 'MESTRE')
+ORDER BY escolaridade, nome;
+-- Equivalente: WHERE escolaridade = 'DOUTOR' OR escolaridade = 'MESTRE'
+-- Lembrete: em "ORDER BY escolaridade, nome ASC" o ASC vale só para nome.
 
 
 -- -----------------------------------------------------
@@ -55,5 +71,17 @@
 --   b) SELECT que mostre só essa linha
 --   c) DELETE usando o mesmo WHERE
 --   d) explicar: o que faria DELETE FROM aula01.despesa; (sem WHERE)?
+-- Status: FEITO (26/10) - conferido no Supabase, voltou a 3 linhas
 -- -----------------------------------------------------
--- (resolução do Mateus)
+INSERT INTO aula01.despesa (descricao, valor, data_venc)
+VALUES ('Teste', 10.00, '2026-12-01');      -- recebeu o id 5
+
+SELECT * FROM aula01.despesa WHERE id_despesa = 5;
+
+DELETE FROM aula01.despesa WHERE id_despesa = 5;
+-- Erros na tentativa: "DELETE * FROM" -> DELETE não leva * (apaga sempre a
+-- linha inteira); id entre aspas '5' -> número vai sem aspas.
+--
+-- d) Resposta do Mateus: "deletaria a tabela inteira".
+--    Ajuste: apagaria TODAS AS LINHAS, mas a TABELA continua existindo, vazia.
+--    Quem apaga a tabela (estrutura + dados) é o DROP TABLE.

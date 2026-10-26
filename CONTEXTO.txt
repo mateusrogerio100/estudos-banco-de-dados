@@ -1,7 +1,7 @@
 =====================================================================
  CONTEXTO DO CURSO DE BANCO DE DADOS - MEMÓRIA PARA O CLAUDE
  (ler este arquivo no início de cada conversa ou depois de um /compact)
- Última atualização: 24/10/2026
+ Última atualização: 26/10/2026
 =====================================================================
 
 1. QUEM É O ALUNO
@@ -87,7 +87,7 @@
 ---------------------------------------------------------------------
   Aula 01  Conceitos, tipos, CREATE TABLE, INSERT, SELECT ......... FEITA
   Aula 02  WHERE (=, <>, >, <, AND, OR, IN), ORDER BY,
-           UPDATE e DELETE ........................................ EM ANDAMENTO
+           UPDATE e DELETE ........................................ FEITA (26/10)
   REVISÃO 1 (Aulas 01 e 02)
   Aula 03  Estrutura: CREATE DATABASE (teoria), SEQUENCE x SERIAL,
            restrições (PK, UNIQUE, NOT NULL, DEFAULT, CONSTRAINT nome),
@@ -103,21 +103,12 @@
 
 6. ONDE PARAMOS / PENDÊNCIAS
 ---------------------------------------------------------------------
-- Última sessão: 24/10/2026 (sábado de manhã). O Mateus saiu no meio
-  da Aula 02.
-- AULA 02 - situação dos 5 exercícios (aula02/exercicios.sql):
-    Ex.1 (UPDATE em aula01.despesa) ... FEITO e conferido no Supabase.
-    Ex.2 (MESTRES em ordem de nome) ... feito, mas o SELECT não foi
-                                        enviado -> pedir para colar.
-                                        Esperado: 2 linhas (ALESSANDRO, ANDRE).
-    Ex.3 (cargos > 2000, DESC) ........ PAROU AQUI. Esperado: 4 linhas
-                                        (DBA ORACLE 7900, DBA POSTGRESQL 7500,
-                                        ADMINISTRADOR... 2600, ANALISTA DE BI 2300).
-    Ex.4 (IN DOUTOR/MESTRE) ........... a fazer. Esperado: 4 linhas
-                                        (ALEXANDRE, FERNANDO, ALESSANDRO, ANDRE).
-    Ex.5 (DELETE com segurança) ....... a fazer. Conferir no Supabase que
-                                        'Teste' foi inserido e depois apagado
-                                        (aula01.despesa deve voltar a 3 linhas).
+- Última sessão: 26/10/2026. AULA 02 CONCLUÍDA (5 exercícios feitos;
+  resoluções e erros comentados em aula02/exercicios.sql).
+- PRÓXIMO PASSO: REVISÃO 1 (Aulas 01 e 02) - 4 a 5 exercícios misturando
+  CREATE TABLE, INSERT, SELECT, WHERE/IN, ORDER BY, UPDATE, DELETE.
+  Criar schema revisao01. Incluir as pendências da Aula 01 (abaixo) e
+  reforçar: DELETE sem WHERE x DROP TABLE; OR com condição completa; IN (...).
 - Dificuldades que apareceram (reforçar):
     * SELECT sem colunas ("SELECT FROM tabela") -> não mostra nada.
     * ; no meio do comando (antes do WHERE) -> erro de sintaxe.
@@ -125,12 +116,15 @@
     * SET search_path só vale na execução em que está incluído.
     * Rodar de novo CREATE/ALTER/INSERT -> erro "already exists" ou
       dados duplicados. Só SELECT pode repetir.
+    * ORDER BY DESC sem a coluna.
+    * WHERE x = 'A' OR 'B'  e  WHERE x = 'A' IN 'B'  (sintaxe do OR/IN).
+    * DELETE * FROM (DELETE não leva *); número entre aspas.
+    * Achou que DELETE sem WHERE apaga a tabela (apaga as linhas; DROP apaga a tabela).
 - Pendências da Aula 01 (cobrar na REVISÃO 1):
     * Exercício 3c: explicar por que "paga" ficou FALSE (DEFAULT).
     * Exercício 4: achar os 2 erros do CREATE TABLE do colega
       (vírgula faltando depois de PRIMARY KEY; vírgula sobrando no fim)
       e criar aula01.receita.
-- Próximo passo depois da Aula 02: REVISÃO 1 (Aulas 01 e 02).
 
 7. COMO RETOMAR DEPOIS DE UM /compact
 ---------------------------------------------------------------------
