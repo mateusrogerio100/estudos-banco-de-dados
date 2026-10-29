@@ -1,7 +1,7 @@
 =====================================================================
  CONTEXTO DO CURSO DE BANCO DE DADOS - MEMÓRIA PARA O CLAUDE
  (ler este arquivo no início de cada conversa ou depois de um /compact)
- Última atualização: 26/10/2026
+ Última atualização: 29/10/2026
 =====================================================================
 
 1. QUEM É O ALUNO
@@ -105,8 +105,15 @@
 ---------------------------------------------------------------------
 - Última sessão: 26/10/2026. AULA 02 CONCLUÍDA (5 exercícios feitos;
   resoluções e erros comentados em aula02/exercicios.sql).
-- REVISÃO 1 ENTREGUE em 26/10 (revisao01/exercicios.sql). Aguardando o
-  Mateus. Tabela: revisao01.titulo (contas a pagar, 6 títulos, 1 duplicado).
+- Última sessão: 29/10/2026 (quinta à noite).
+- REVISÃO 1 em andamento (revisao01/exercicios.sql):
+    Ex.1 FEITO (tabela conferida, 3ª tentativa) + resposta do DEFAULT certa
+    Ex.2 FEITO (6 títulos certos). ATENÇÃO: gravou "Distribuidora Medsul"
+         (s minúsculo) -> nos filtros usar 'Distribuidora Medsul'.
+         ids: 1 Energia 10/11 | 2 Medsul | 3 Papelaria | 4 Medsul dup |
+              5 Águas (pago) | 6 Energia 10/10 (pago)
+    Ex.3 PAROU AQUI (pedir para colar os 2 SELECTs)
+    Ex.4 e Ex.5 a fazer
   Gabarito / resultados esperados (testados):
     Ex.3a não pagos por vencimento: Papelaria 28/10, Energia 10/11,
           MedSul 20/11, MedSul 20/11 (4 linhas)
@@ -130,8 +137,10 @@
     * WHERE x = 'A' OR 'B'  e  WHERE x = 'A' IN 'B'  (sintaxe do OR/IN).
     * DELETE * FROM (DELETE não leva *); número entre aspas.
     * Achou que DELETE sem WHERE apaga a tabela (apaga as linhas; DROP apaga a tabela).
+    * Não conferiu o CREATE TABLE contra o enunciado (tamanho VARCHAR e NOT NULL)
+      -> reforçar o hábito de conferir linha por linha antes de rodar.
 - Pendências da Aula 01 (incluídas na REVISÃO 1, ex. 1 e 5a):
-    * Exercício 3c: explicar por que "paga" ficou FALSE (DEFAULT).
+    * Exercício 3c: RESPONDIDO em 29/10 (certo).
     * Exercício 4: achar os 2 erros do CREATE TABLE do colega
       (vírgula faltando depois de PRIMARY KEY; vírgula sobrando no fim)
       e criar aula01.receita.

@@ -55,7 +55,8 @@ INSERT INTO aula01.despesa (descricao, valor, data_venc, paga) VALUES
 -- 3b)
 SELECT descricao, valor, paga FROM aula01.despesa;
 
--- 3c) PENDENTE: explicar o que apareceu na coluna "paga" e por quê.
+-- 3c) RESPONDIDO na Revisão 1 (29/10): grava FALSE por causa do DEFAULT FALSE,
+--     usado quando a coluna não aparece no INSERT.
 
 -- O que aprendi:
 --  * Data é sempre 'AAAA-MM-DD'. '28-10-2026' dá erro (não existe mês 28).

@@ -10,7 +10,22 @@
 --   pago BOOLEAN obrigatório, padrão FALSE
 --   + pergunta (pendência da Aula 01, ex. 3c): se o INSERT não informar "pago",
 --     que valor o banco grava? Por quê?
--- (resolução do Mateus)
+-- Status: FEITO (29/10), na 3ª tentativa (conferido no Supabase)
+--   1ª: fornecedor VARCHAR(100) e valor/vencimento sem NOT NULL
+--   2ª: NOT NULL corrigido, mas fornecedor ainda VARCHAR(100)
+--   -> tabela vazia: corrigida com DROP TABLE + CREATE TABLE de novo
+CREATE SCHEMA revisao01;
+
+CREATE TABLE revisao01.titulo (
+  id_titulo   SERIAL PRIMARY KEY,
+  fornecedor  VARCHAR(80)   NOT NULL,
+  valor       NUMERIC(10,2) NOT NULL,
+  vencimento  DATE          NOT NULL,
+  pago        BOOLEAN       NOT NULL DEFAULT FALSE
+);
+-- Resposta do Mateus: "já vem como default que não foi pago" -> CERTO.
+-- Forma técnica: grava FALSE por causa do DEFAULT FALSE, que é usado quando a
+-- coluna NÃO aparece no INSERT (escrever NULL não ativa o DEFAULT).
 
 
 -- Exercício 2 - Inserir os títulos (dados no formato brasileiro -> converter)
@@ -20,7 +35,20 @@
 --   Energia Paulista     | 1.180,40 | 10/10/2026 | sim
 --   Papelaria Central    |   215,90 | 28/10/2026 | (não informar)
 --   Distribuidora MedSul | 4.900,00 | 20/11/2026 | (não informar)  <- duplicidade proposital
--- (resolução do Mateus)
+-- Status: FEITO (29/10) - 6 títulos, valores e datas todos certos.
+--   Obs.: gravado "Distribuidora Medsul" (s minúsculo). Nos filtros, usar
+--   exatamente assim: texto entre aspas diferencia maiúscula de minúscula.
+-- ids gerados: 1 Energia 10/11 | 2 Medsul | 3 Papelaria | 4 Medsul (duplicada)
+--              5 Águas (pago) | 6 Energia 10/10 (pago)
+INSERT INTO revisao01.titulo (fornecedor, valor, vencimento) VALUES
+  ('Energia Paulista',     1250.80, '2026-11-10'),
+  ('Distribuidora Medsul', 4900.00, '2026-11-20'),
+  ('Papelaria Central',     215.90, '2026-10-28'),
+  ('Distribuidora Medsul', 4900.00, '2026-11-20');
+
+INSERT INTO revisao01.titulo (fornecedor, valor, vencimento, pago) VALUES
+  ('Águas da Cidade',   380.15, '2026-11-05', TRUE),
+  ('Energia Paulista', 1180.40, '2026-10-10', TRUE);
 
 
 -- Exercício 3 - Consultas
@@ -29,6 +57,7 @@
 --   b) fornecedor e valor dos títulos da Energia Paulista ou da Distribuidora
 --      MedSul (usar IN) com valor acima de 1000, do maior para o menor valor
 --                                            (esperado: 4 linhas)
+-- Status: PAROU AQUI (29/10)
 -- (resolução do Mateus)
 
 
