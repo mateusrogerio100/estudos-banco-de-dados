@@ -89,7 +89,7 @@
   Aula 02  WHERE (=, <>, >, <, AND, OR, IN), ORDER BY,
            UPDATE e DELETE ........................................ FEITA (26/10)
   REVISÃO 1 (Aulas 01 e 02) ...................................... FEITA (02/11)
-  Aula 03  Estrutura: CREATE DATABASE (teoria), SEQUENCE x SERIAL,
+  Aula 03  Estrutura: CREATE DATABASE (teoria), SEQUENCE x SERIAL,  EM ANDAMENTO
            restrições (PK, UNIQUE, NOT NULL, DEFAULT, CONSTRAINT nome),
            ALTER TABLE e DROP TABLE
   Aula 04  Relacionamentos: chave estrangeira, tabela associativa
@@ -106,11 +106,18 @@
 - Última sessão: 02/11/2026. REVISÃO 1 CONCLUÍDA (5 exercícios; ver
   revisao01/exercicios.sql). Nenhuma pendência das Aulas 01 e 02.
   Estado do banco: revisao01.titulo com 5 títulos; aula01.receita criada (vazia).
-- PRÓXIMO PASSO: AULA 03 (estrutura) - CREATE DATABASE (teoria, comando do
-  professor x schema no Supabase), SEQUENCE + NEXTVAL x SERIAL,
-  restrições (PK, UNIQUE, NOT NULL, DEFAULT, CONSTRAINT com nome),
-  ALTER TABLE (ADD/DROP COLUMN, ADD/DROP CONSTRAINT) e DROP TABLE.
-  Usar schema aula03. 4 a 5 exercícios. Atualizar o Word.
+- AULA 03 ENTREGUE em 02/11 (aula03/teoria.md + 5 exercícios). Aguardando.
+  Tema: cadastro de fornecedores (aula03.seq_fornecedor + aula03.fornecedor).
+  Gabarito (testado no PostgreSQL):
+    Ex.2 o INSERT da 'Medsul Filial' falha: duplicate key ... uq_fornecedor_cnpj
+         (e gasta um número da sequence -> próximo id pula).
+    Ex.3 final: razao_social, cnpj, email (vazio), ativo (true); sem cidade.
+    Ex.4 erro: column "telefone" ... contains null values. Soluções: sem NOT
+         NULL, ou NOT NULL DEFAULT 'não informado'.
+    Ex.5c erro: could not create unique index "uq_fornecedor_cnpj"
+         (há CNPJ repetido). Apagar a filial e recriar funciona.
+  Observação: PostgreSQL PERMITE DROP COLUMN da coluna da PK (some a PK);
+  o slide diz que "atributos chave não podem ser removidos" -> regra conceitual.
 - Perguntas que o Mateus fez (já explicadas): diferença de SELECT * e
   SELECT colunas (* para olhar, lista para responder/entregar).
 - Dificuldades que apareceram (reforçar):

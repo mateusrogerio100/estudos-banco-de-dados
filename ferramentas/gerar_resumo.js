@@ -283,6 +283,69 @@ DELETE FROM revisao01.titulo               WHERE id_titulo = 4;`),
       'Conferir o CREATE TABLE contra o enunciado **antes** de rodar: tamanho do `VARCHAR` e `NOT NULL` contam ponto.',
     ]),
   ],
+
+  () => [
+    h1('Aula 03 — Estrutura das tabelas', true),
+
+    h2('1. CREATE DATABASE (como o professor faz no pgAdmin)'),
+    ...codigo(`CREATE DATABASE "AULAS"
+  OWNER = postgres          -- usuário dono do banco
+  TEMPLATE = template0      -- modelo estrutural
+  ENCODING = 'WIN1252'      -- conjunto de caracteres
+  TABLESPACE = pg_default   -- onde os arquivos ficam
+  CONNECTION LIMIT = -1;    -- -1 = conexões ilimitadas
+
+DROP DATABASE "AULAS";      -- apaga o banco inteiro`),
+    bullet('Só o **nome** é obrigatório; os argumentos são opcionais. Evite espaços e caracteres especiais no nome.'),
+    bullet('No **Supabase** não se cria outro banco: usamos **SCHEMA** (uma "pasta" dentro do banco) com o mesmo papel.'),
+
+    h2('2. SEQUENCE x SERIAL'),
+    p('A **sequence** é um contador que o banco guarda. O professor cria a sequence e liga na coluna com `NEXTVAL`:'),
+    ...codigo(`CREATE SEQUENCE seq_fornecedor
+  INCREMENT 1      -- de quanto em quanto
+  MINVALUE 1;      -- começa em
+
+CREATE TABLE fornecedor (
+  id_fornecedor INTEGER DEFAULT NEXTVAL('seq_fornecedor'),
+  ...
+);`),
+    bullet('`SERIAL` faz **a mesma coisa automaticamente**: cria a sequence (com nome `tabela_coluna_seq`) e o DEFAULT.'),
+    bullet('`NEXTVAL(\'nome_da_sequence\')` = "me dá o próximo número".'),
+    bullet('O contador **nunca volta atrás**: um INSERT que falha "gasta" um número, por isso os códigos podem ter buracos.'),
+
+    h2('3. Restrições (constraints)'),
+    ...tabela(['Restrição', 'Garante', 'Exemplo de uso'], [
+      ['`PRIMARY KEY`', 'identifica a linha: **não repete e não fica vazia**', 'código do fornecedor'],
+      ['`NOT NULL`', 'campo **obrigatório**', 'razão social'],
+      ['`UNIQUE`', '**não repete** (mas pode ficar vazio)', 'CNPJ, CPF, e-mail'],
+      ['`DEFAULT`', 'valor usado quando ninguém informa', 'ativo = TRUE'],
+      ['`FOREIGN KEY`', 'aponta para a chave de outra tabela', 'Aula 04'],
+    ], [0.22, 0.48, 0.3]),
+    p('**Restrição com nome** (estilo do professor), no final do CREATE TABLE:'),
+    ...codigo(`CONSTRAINT pk_fornecedor      PRIMARY KEY (id_fornecedor),
+CONSTRAINT uq_fornecedor_cnpj UNIQUE (cnpj)`),
+    bullet('O nome aparece na **mensagem de erro** (fica fácil saber qual regra foi quebrada) e serve para **remover ou recriar** a restrição depois.'),
+    bullet('Padrão de nomes: `pk_` chave primária, `uq_` único, `fk_` chave estrangeira.'),
+
+    h2('4. ALTER TABLE — mudar a estrutura sem perder os dados'),
+    ...codigo(`ALTER TABLE fornecedor ADD COLUMN email VARCHAR(100);
+ALTER TABLE fornecedor ADD COLUMN ativo BOOLEAN NOT NULL DEFAULT TRUE;
+ALTER TABLE fornecedor DROP COLUMN cidade;
+ALTER TABLE fornecedor DROP CONSTRAINT uq_fornecedor_cnpj;
+ALTER TABLE fornecedor ADD CONSTRAINT uq_fornecedor_cnpj UNIQUE (cnpj);`),
+    ...tabela(['Situação', 'Use'], [
+      ['Tabela **vazia** com estrutura errada', '`DROP TABLE` + `CREATE TABLE` de novo'],
+      ['Tabela **com dados**', '`ALTER TABLE` (preserva os dados)'],
+    ], [0.5, 0.5]),
+
+    ...atencao('Regras do ALTER / DROP (caem em prova)', [
+      'Coluna `NOT NULL` **sem DEFAULT** não pode ser adicionada em tabela com dados: as linhas antigas ficariam vazias (erro *contains null values*). Com `DEFAULT`, funciona.',
+      'Não remova a coluna da **chave primária**: o PostgreSQL até deixa, mas a tabela perde a chave.',
+      'Não dá para criar `UNIQUE` em coluna que **já tem valores repetidos**: limpe as duplicidades antes.',
+      '`DROP TABLE` não remove uma tabela que é **referenciada por outra** (chave estrangeira).',
+      'Sequence criada sem o schema (`CREATE SEQUENCE seq_x`) vai para o `public`. No Supabase, escreva `aula03.seq_x`.',
+    ]),
+  ],
 ];
 
 // ---------- documento ----------
