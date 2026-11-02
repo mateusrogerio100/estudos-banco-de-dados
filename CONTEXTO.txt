@@ -1,7 +1,7 @@
 =====================================================================
  CONTEXTO DO CURSO DE BANCO DE DADOS - MEMÓRIA PARA O CLAUDE
  (ler este arquivo no início de cada conversa ou depois de um /compact)
- Última atualização: 29/10/2026
+ Última atualização: 02/11/2026
 =====================================================================
 
 1. QUEM É O ALUNO
@@ -88,7 +88,7 @@
   Aula 01  Conceitos, tipos, CREATE TABLE, INSERT, SELECT ......... FEITA
   Aula 02  WHERE (=, <>, >, <, AND, OR, IN), ORDER BY,
            UPDATE e DELETE ........................................ FEITA (26/10)
-  REVISÃO 1 (Aulas 01 e 02) ...................................... EM ANDAMENTO
+  REVISÃO 1 (Aulas 01 e 02) ...................................... FEITA (02/11)
   Aula 03  Estrutura: CREATE DATABASE (teoria), SEQUENCE x SERIAL,
            restrições (PK, UNIQUE, NOT NULL, DEFAULT, CONSTRAINT nome),
            ALTER TABLE e DROP TABLE
@@ -103,29 +103,16 @@
 
 6. ONDE PARAMOS / PENDÊNCIAS
 ---------------------------------------------------------------------
-- Última sessão: 26/10/2026. AULA 02 CONCLUÍDA (5 exercícios feitos;
-  resoluções e erros comentados em aula02/exercicios.sql).
-- Última sessão: 29/10/2026 (quinta à noite).
-- REVISÃO 1 em andamento (revisao01/exercicios.sql):
-    Ex.1 FEITO (tabela conferida, 3ª tentativa) + resposta do DEFAULT certa
-    Ex.2 FEITO (6 títulos certos). ATENÇÃO: gravou "Distribuidora Medsul"
-         (s minúsculo) -> nos filtros usar 'Distribuidora Medsul'.
-         ids: 1 Energia 10/11 | 2 Medsul | 3 Papelaria | 4 Medsul dup |
-              5 Águas (pago) | 6 Energia 10/10 (pago)
-    Ex.3 PAROU AQUI (pedir para colar os 2 SELECTs)
-    Ex.4 e Ex.5 a fazer
-  Gabarito / resultados esperados (testados):
-    Ex.3a não pagos por vencimento: Papelaria 28/10, Energia 10/11,
-          MedSul 20/11, MedSul 20/11 (4 linhas)
-    Ex.3b IN + valor > 1000, DESC: MedSul 4900, MedSul 4900,
-          Energia 1250.80, Energia 1180.40 (4 linhas)
-    Ex.4  final = 5 títulos; Energia 10/11 pago = TRUE; só 1 MedSul;
-          Papelaria valor 251.90
-    Ex.5b erros: falta vírgula em "fornecedor valor" (vira apelido, SEM
-          erro); OR sem condição completa; ORDER BY sem coluna.
-  Depois da Revisão 1: Aula 03 (estrutura: CREATE DATABASE, SEQUENCE,
-  restrições, ALTER/DROP TABLE). Atualizar o Word com um quadro de
-  erros comuns da revisão.
+- Última sessão: 02/11/2026. REVISÃO 1 CONCLUÍDA (5 exercícios; ver
+  revisao01/exercicios.sql). Nenhuma pendência das Aulas 01 e 02.
+  Estado do banco: revisao01.titulo com 5 títulos; aula01.receita criada (vazia).
+- PRÓXIMO PASSO: AULA 03 (estrutura) - CREATE DATABASE (teoria, comando do
+  professor x schema no Supabase), SEQUENCE + NEXTVAL x SERIAL,
+  restrições (PK, UNIQUE, NOT NULL, DEFAULT, CONSTRAINT com nome),
+  ALTER TABLE (ADD/DROP COLUMN, ADD/DROP CONSTRAINT) e DROP TABLE.
+  Usar schema aula03. 4 a 5 exercícios. Atualizar o Word.
+- Perguntas que o Mateus fez (já explicadas): diferença de SELECT * e
+  SELECT colunas (* para olhar, lista para responder/entregar).
 - Dificuldades que apareceram (reforçar):
     * SELECT sem colunas ("SELECT FROM tabela") -> não mostra nada.
     * ; no meio do comando (antes do WHERE) -> erro de sintaxe.
@@ -139,11 +126,11 @@
     * Achou que DELETE sem WHERE apaga a tabela (apaga as linhas; DROP apaga a tabela).
     * Não conferiu o CREATE TABLE contra o enunciado (tamanho VARCHAR e NOT NULL)
       -> reforçar o hábito de conferir linha por linha antes de rodar.
-- Pendências da Aula 01 (incluídas na REVISÃO 1, ex. 1 e 5a):
-    * Exercício 3c: RESPONDIDO em 29/10 (certo).
-    * Exercício 4: achar os 2 erros do CREATE TABLE do colega
-      (vírgula faltando depois de PRIMARY KEY; vírgula sobrando no fim)
-      e criar aula01.receita.
+    * ORDER BY sem coluna REPETIU 2x na revisão (ORDER BY DESC / ORDER BY ASC)
+      -> ponto fraco nº 1, cobrar de novo nas próximas aulas.
+    * Dois WHERE no mesmo comando (o segundo deveria ser AND).
+    * Vírgula faltando entre colunas no SELECT -> vira apelido, sem erro.
+    * TRUE/FALSE entre aspas ('false') -> funciona, mas o certo é sem aspas.
 
 7. COMO RETOMAR DEPOIS DE UM /compact
 ---------------------------------------------------------------------

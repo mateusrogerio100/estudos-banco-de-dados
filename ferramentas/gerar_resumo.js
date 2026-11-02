@@ -241,6 +241,48 @@ WHERE valor > 7000
       'No SQL Editor, com a lista de sugestões aberta, o **Enter aceita a sugestão**. Aperte **Esc** antes.',
     ]),
   ],
+
+  () => [
+    h1('Revisão 1 — Aulas 01 e 02', true),
+    p('Contas a pagar (`revisao01.titulo`): respostas certas e lições.'),
+
+    h2('1. Consultas com várias condições'),
+    ...codigo(`-- títulos não pagos, do vencimento mais antigo para o mais novo
+SELECT fornecedor, valor, vencimento FROM revisao01.titulo
+WHERE pago = FALSE
+ORDER BY vencimento;            -- crescente = mais antiga primeiro
+
+-- fornecedores da lista E valor acima de 1000, do maior para o menor
+SELECT fornecedor, valor FROM revisao01.titulo
+WHERE fornecedor IN ('Energia Paulista', 'Distribuidora Medsul')
+  AND valor > 1000
+ORDER BY valor DESC;`),
+    bullet('Um comando tem **um só** `WHERE`. Para juntar condições, use `AND` (as duas valem) ou `OR` (basta uma).'),
+    bullet('Datas também se ordenam: `ASC` = mais antiga → mais nova; `DESC` = mais nova → mais antiga.'),
+    bullet('`TRUE` e `FALSE` vão **sem aspas**, como os números.'),
+    bullet('Texto entre aspas diferencia maiúscula de minúscula: `\'Medsul\'` e `\'MedSul\'` são diferentes.'),
+
+    h2('2. UPDATE e DELETE com WHERE preciso'),
+    ...codigo(`UPDATE revisao01.titulo SET pago = TRUE   WHERE id_titulo = 1;
+UPDATE revisao01.titulo SET valor = 251.90 WHERE id_titulo = 3;
+DELETE FROM revisao01.titulo               WHERE id_titulo = 4;`),
+    bullet('Filtrar só por `fornecedor = \'Energia Paulista\'` alteraria **duas** linhas. Quanto mais preciso o WHERE, mais seguro.'),
+    bullet('Em linhas **duplicadas** (todos os dados iguais), só a **chave primária** diferencia uma da outra.'),
+
+    h2('3. SELECT * ou lista de colunas?'),
+    ...tabela(['Use', 'Quando'], [
+      ['`SELECT *`', 'Para **olhar**: explorar a tabela, conferir um UPDATE/DELETE.'],
+      ['`SELECT col1, col2`', 'Para **responder** ou entregar: quando o enunciado pede colunas específicas (o `*` traz colunas a mais e perde ponto), em relatórios e sistemas.'],
+    ], [0.3, 0.7]),
+
+    ...atencao('Erros da Revisão 1 (o 1º já apareceu 3 vezes!)', [
+      '`ORDER BY DESC` / `ORDER BY ASC` → falta a coluna. Depois de `ORDER BY`, a próxima palavra é **sempre o nome de uma coluna**.',
+      '`DESC` solto sem `ORDER BY`; dois `WHERE` no mesmo comando (o segundo deve ser `AND`/`OR`).',
+      '**Erro silencioso:** `SELECT fornecedor valor` (sem vírgula) **não dá erro**. O banco entende `valor` como **apelido** da coluna fornecedor e mostra **uma coluna só**, chamada "valor", com os nomes dentro.',
+      'No CREATE TABLE: vírgula **faltando** entre colunas dá erro; vírgula **sobrando** depois da última coluna também dá erro.',
+      'Conferir o CREATE TABLE contra o enunciado **antes** de rodar: tamanho do `VARCHAR` e `NOT NULL` contam ponto.',
+    ]),
+  ],
 ];
 
 // ---------- documento ----------

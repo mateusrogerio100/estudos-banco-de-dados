@@ -72,7 +72,7 @@ SELECT descricao, valor, paga FROM aula01.despesa;
 
 -- -----------------------------------------------------
 -- Exercício 4 - Caça aos erros (código do colega)
--- Status: 2 de 4 erros encontrados
+-- Status: 4 de 4 erros encontrados (os 2 últimos na Revisão 1)
 -- -----------------------------------------------------
 /*
 CREATE TABLE aula01.receita (
@@ -88,4 +88,5 @@ VALUES (Salário, 3500,00, '2026-10-05');
 -- Erros encontrados:
 --  1. Salário sem aspas -> o banco acha que é nome de coluna. Certo: 'Salário'
 --  2. 3500,00 com vírgula -> vira dois valores (4 valores p/ 3 colunas). Certo: 3500.00
--- PENDENTE: achar os 2 erros do CREATE TABLE (dica: regra das vírgulas)
+-- RESOLVIDO na Revisão 1 (02/11): faltava vírgula depois de PRIMARY KEY e
+-- sobrava vírgula depois da última coluna. aula01.receita criada.

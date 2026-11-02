@@ -57,8 +57,21 @@ INSERT INTO revisao01.titulo (fornecedor, valor, vencimento, pago) VALUES
 --   b) fornecedor e valor dos títulos da Energia Paulista ou da Distribuidora
 --      MedSul (usar IN) com valor acima de 1000, do maior para o menor valor
 --                                            (esperado: 4 linhas)
--- Status: PAROU AQUI (29/10)
--- (resolução do Mateus)
+-- Status: FEITO (02/11)
+-- Tentativas na a): "where pago = 'false' desc" (DESC solto, sem ORDER BY, e
+--   direção invertida) -> "order by asc" (faltou a coluna de novo).
+-- Tentativa na b): dois WHERE no mesmo comando (o 2º deve ser AND);
+--   parênteses sobrando na lista do IN; faltou o ORDER BY.
+-- a) 4 linhas: Papelaria 28/10, Energia 10/11, Medsul 20/11, Medsul 20/11
+SELECT fornecedor, valor, vencimento FROM revisao01.titulo
+WHERE pago = FALSE
+ORDER BY vencimento;
+
+-- b) 4 linhas: Medsul 4900, Medsul 4900, Energia 1250.80, Energia 1180.40
+SELECT fornecedor, valor FROM revisao01.titulo
+WHERE fornecedor IN ('Energia Paulista', 'Distribuidora Medsul')
+  AND valor > 1000
+ORDER BY valor DESC;
 
 
 -- Exercício 4 - Ajustes (sempre SELECT de conferência antes)
@@ -66,7 +79,13 @@ INSERT INTO revisao01.titulo (fornecedor, valor, vencimento, pago) VALUES
 --   b) excluir a duplicidade da Distribuidora MedSul (apagar só UMA linha)
 --   c) Papelaria Central foi digitada errado: o certo é 251,90 (erro de transposição)
 --   Resultado final esperado: 5 títulos
--- (resolução do Mateus)
+-- Status: FEITO (02/11) - conferido no Supabase, de primeira, 5 títulos certos
+--   e linhas não alvo intactas.
+UPDATE revisao01.titulo SET pago = TRUE WHERE id_titulo = 1;
+DELETE FROM revisao01.titulo WHERE id_titulo = 4;   -- só a chave primária diferencia
+UPDATE revisao01.titulo SET valor = 251.90 WHERE id_titulo = 3;
+-- Lição: filtrar só por fornecedor = 'Energia Paulista' alteraria 2 linhas;
+-- na duplicidade, só o id_titulo diferencia uma linha da outra.
 
 
 -- Exercício 5 - Caça aos erros
@@ -82,4 +101,20 @@ INSERT INTO revisao01.titulo (fornecedor, valor, vencimento, pago) VALUES
 --      SELECT fornecedor valor FROM revisao01.titulo
 --      WHERE fornecedor = 'Energia Paulista' OR 'Águas da Cidade'
 --      ORDER BY DESC;
--- (resolução do Mateus)
+-- Status: FEITO (02/11)
+-- a) aula01.receita criada (conferida no Supabase):
+CREATE TABLE aula01.receita (
+  id_receita  SERIAL PRIMARY KEY,          -- faltava a vírgula
+  descricao   VARCHAR(100) NOT NULL,
+  valor       NUMERIC(10,2),
+  data_receb  DATE                         -- vírgula sobrando na última coluna
+);
+-- b) Os 3 erros (o Mateus achou os 3; o 3º com uma dica):
+--   1. OR com o lado direito incompleto -> usar IN (...) ou repetir a coluna
+--   2. ORDER BY sem a coluna -> ORDER BY valor DESC
+--   3. "fornecedor valor" sem vírgula -> NÃO dá erro: "valor" vira APELIDO
+--      (alias) da coluna fornecedor. Resultado: 1 coluna só, chamada "valor",
+--      com os nomes dos fornecedores dentro. Erro silencioso!
+SELECT fornecedor, valor FROM revisao01.titulo
+WHERE fornecedor IN ('Energia Paulista', 'Águas da Cidade')
+ORDER BY valor DESC;
