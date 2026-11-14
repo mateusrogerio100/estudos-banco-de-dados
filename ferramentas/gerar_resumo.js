@@ -346,6 +346,64 @@ ALTER TABLE fornecedor ADD CONSTRAINT uq_fornecedor_cnpj UNIQUE (cnpj);`),
       'Sequence criada sem o schema (`CREATE SEQUENCE seq_x`) vai para o `public`. No Supabase, escreva `aula03.seq_x`.',
     ]),
   ],
+
+  () => [
+    h1('JOIN — juntar duas tabelas', true),
+    p('O JOIN é um **PROCV**: pega a coluna em comum (a "chave" do PROCV) e traz a informação da outra tabela. Exemplo com os dados do Exercício 08:'),
+    ...tabela(['CLIENTE: id_cliente', 'nm_cliente', 'PEDIDO: nr_pedido', 'id_cliente'], [
+      ['1', 'HUGO', '77895', '3'],
+      ['2', 'TIAGO', '44678', '3'],
+      ['3', 'SABRINA', '22456', '1'],
+      ['', '', '24562', '1'],
+      ['', '', '34764', '15 (não existe)'],
+    ], [0.25, 0.25, 0.25, 0.25]),
+
+    h2('1. Como ler um JOIN (frase por frase)'),
+    ...codigo(`SELECT pedido.nr_pedido, cliente.nm_cliente
+FROM cliente
+INNER JOIN pedido ON (pedido.id_cliente = cliente.id_cliente);`),
+    ...tabela(['Parte', 'Em português'], [
+      ['`SELECT pedido.nr_pedido, cliente.nm_cliente`', 'quero ver o **número** (que está em PEDIDO) e o **nome** (que está em CLIENTE)'],
+      ['`FROM cliente`', 'comece pela tabela CLIENTE'],
+      ['`INNER JOIN pedido`', 'e junte com a tabela PEDIDO'],
+      ['`ON (pedido.id_cliente = cliente.id_cliente)`', '**ligando** onde o código do cliente for **igual** nas duas'],
+    ], [0.48, 0.52]),
+    bullet('**O nome antes do ponto diz de onde vem a informação:** `pedido.nr_pedido` = coluna nr_pedido **da tabela pedido**.'),
+    bullet('O `ON` é o **coração do JOIN**: diz qual coluna as duas tabelas têm em comum (no PROCV, o valor procurado).'),
+
+    h2('2. O que o banco faz, linha por linha (INNER JOIN)'),
+    ...tabela(['Pedido', 'id_cliente do pedido', 'Achou na CLIENTE?', 'Resultado'], [
+      ['77895', '3', '✔ SABRINA', '77895 – SABRINA'],
+      ['44678', '3', '✔ SABRINA', '44678 – SABRINA'],
+      ['22456', '1', '✔ HUGO', '22456 – HUGO'],
+      ['24562', '1', '✔ HUGO', '24562 – HUGO'],
+      ['34764', '15', '✘ não existe', '**fica de fora**'],
+    ], [0.18, 0.24, 0.26, 0.32]),
+    p('E o TIAGO? Nenhum pedido aponta para ele, então também **fica de fora**. INNER JOIN = **só o que casou nos dois lados**.'),
+
+    h2('3. Os 4 tipos: muda só o destino de quem "não casou"'),
+    p('**Esquerda** = tabela escrita no `FROM`; **direita** = tabela escrita depois do `JOIN`. Onde não há par, o banco completa com **NULL** (vazio — o "#N/D" do PROCV).'),
+    ...tabela(['Tipo', 'Regra', 'TIAGO (sem pedido)', 'Pedido 34764 (sem cliente)', 'Linhas'], [
+      ['`INNER JOIN`', 'só quem casou', '✘', '✘', '4'],
+      ['`LEFT JOIN`', '**tudo da esquerda** + o que casou', '✔ pedido vazio', '✘', '5'],
+      ['`RIGHT JOIN`', '**tudo da direita** + o que casou', '✘', '✔ cliente vazio', '5'],
+      ['`FULL JOIN`', '**tudo dos dois lados**', '✔', '✔', '6'],
+    ], [0.17, 0.3, 0.19, 0.24, 0.1]),
+    ...tabela(['Pergunta', 'JOIN'], [
+      ['Pedidos **com** o nome do cliente', '`INNER`'],
+      ['**Todos** os clientes, inclusive quem nunca comprou', '`LEFT` (cliente à esquerda)'],
+      ['**Todos** os pedidos, inclusive de cliente não cadastrado', '`RIGHT` (pedido à direita)'],
+      ['Tudo, para **conciliar** e achar diferenças dos dois lados', '`FULL`'],
+    ], [0.65, 0.35]),
+
+    ...atencao('Macetes de JOIN', [
+      'Perdido? Troque as colunas por `SELECT *`: aparecem **todas as colunas das duas tabelas lado a lado**, e dá para **ver** o que foi juntado.',
+      '`JOIN` sozinho = `INNER JOIN`. `LEFT JOIN` = `LEFT OUTER JOIN` (o OUTER é opcional).',
+      'LEFT e RIGHT são espelhos: `FROM cliente LEFT JOIN pedido` = `FROM pedido RIGHT JOIN cliente`.',
+      'Achar quem **não tem par**: LEFT JOIN + `WHERE coluna_da_direita IS NULL`.',
+      'No Supabase, tabelas fora do `public` precisam do `SET search_path TO schema;` **no topo do bloco** (ou o nome completo `schema.tabela`). Sem isso: *relation does not exist*.',
+    ]),
+  ],
 ];
 
 // ---------- documento ----------
