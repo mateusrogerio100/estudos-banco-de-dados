@@ -113,7 +113,12 @@
                  Word; VISUALIZADOR interativo publicado como artifact
                  https://claude.ai/artifact/Dt4YT6xFBKRmqGRQszqJt8 ,
                  arquivo visualizador/join.html - foi o que mais ajudou)
-    15/11 (dom)  Chave estrangeira, alias (AS), JOIN com 3 tabelas
+    14/11 (tarde) Aula de FK + alias + JOIN 3 tabelas + resumo Aula 03
+                 ENTREGUE (exercícios K1-K5 em
+                 aula05_join/exercicios_fk_alias_3tabelas.sql). PAROU AQUI:
+                 Mateus vai fazer K1-K5 no domingo 15/11.
+                 Depois: pôr o capítulo FK/alias/3 tabelas no Word.
+    15/11 (dom)  [era] Chave estrangeira, alias (AS), JOIN com 3 tabelas
                  (aluno-matricula-curso), NATURAL/USING/CROSS (teoria);
                  resumo rápido da Aula 03 (constraints, ALTER TABLE)
     16-18/11     LISTA GRANDE de exercícios / simulado no ritmo dele
@@ -124,6 +129,11 @@
 - Erros do dia 14/11: esqueceu SET search_path; esqueceu ORDER BY do
   enunciado; usou "= null" (certo: IS NULL). Ele pediu para pôr no Word a
   tabela "como ler um JOIN frase por frase" -> esse formato funciona.
+- ATENÇÃO: public.funcionario/cargo foram alterados nas aulas do professor
+  (há um funcionário "teste de alteracao", valores de cargo mudaram para
+  7020, 6210...). Conferir os dados reais antes de dar resultados esperados.
+- Há tabelas novas no public: usuario, publicacao, comentario (com FKs) -
+  perguntei se são de exercício novo do professor; aguardando resposta.
 - Dados para os JOINs (exercicio_relacionamento):
     cliente: 1 HUGO, 2 TIAGO (sem pedido), 3 SABRINA
     pedido : 77895 e 44678 -> cliente 3; 22456 e 24562 -> cliente 1;
