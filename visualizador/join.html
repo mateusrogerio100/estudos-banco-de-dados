@@ -1,0 +1,335 @@
+<title>Visualizador de JOIN</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: coluna única — controles, SQL traduzido, as duas tabelas lado a lado ligadas pelo ON, e o resultado embaixo */
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --fg: #1c2430;
+  --muted: #5e6b7c;
+  --line: #d9dfe7;
+  --accent: #2459c9;
+  --accent-soft: #e6edfb;
+  --k1: #0f8a6a;  --k1-soft: #def3ec;   /* cliente 1 (HUGO) */
+  --k3: #b2560f;  --k3-soft: #fbeadb;   /* cliente 3 (SABRINA) */
+  --null: #9aa5b4; --null-soft: #eef1f5;
+  --miss: #b3261e; --miss-soft: #fbe5e3;
+  --code-bg: #eef2f7;
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #11161d; --surface: #19202a; --fg: #e4e9f0; --muted: #98a4b4; --line: #2c3644;
+  --accent: #7ea3f2; --accent-soft: #1f2c45;
+  --k1: #4fd1a8; --k1-soft: #16332b; --k3: #f0a060; --k3-soft: #3a2817;
+  --null: #6f7b8b; --null-soft: #222a35; --miss: #f08a82; --miss-soft: #3a1f1d;
+  --code-bg: #141a22; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #11161d; --surface: #19202a; --fg: #e4e9f0; --muted: #98a4b4; --line: #2c3644;
+  --accent: #7ea3f2; --accent-soft: #1f2c45;
+  --k1: #4fd1a8; --k1-soft: #16332b; --k3: #f0a060; --k3-soft: #3a2817;
+  --null: #6f7b8b; --null-soft: #222a35; --miss: #f08a82; --miss-soft: #3a1f1d;
+  --code-bg: #141a22; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 48px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+h1 { font-family: var(--font-display); font-size: 1.9rem; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font-family: var(--font-display); font-size: 1.1rem; margin: 0 0 10px; }
+.lead { color: var(--muted); margin: 6px 0 0; max-width: 68ch; }
+code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
+
+/* controles */
+.controls { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: flex-end; }
+.group { display: flex; flex-direction: column; gap: 6px; }
+.label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.seg button {
+  font: 600 0.9rem var(--font-mono); padding: 9px 14px; border: 0; background: transparent; color: var(--fg); cursor: pointer;
+  border-right: 1px solid var(--line);
+}
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+.seg button:focus-visible, .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 0.92rem; cursor: pointer; padding-bottom: 8px; }
+
+/* cartões */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; min-width: 0; }
+pre.sql { margin: 0 0 14px; background: var(--code-bg); border-radius: 8px; padding: 14px 16px; overflow-x: auto;
+  font: 0.95rem/1.6 var(--font-mono); }
+.kw { color: var(--accent); font-weight: 600; }
+.read { width: 100%; border-collapse: collapse; font-size: 0.93rem; }
+.read td { padding: 8px 10px; border-top: 1px solid var(--line); vertical-align: top; }
+.read td:first-child { font-family: var(--font-mono); font-size: 0.85rem; white-space: nowrap; color: var(--accent); width: 1%; }
+.scroll { overflow-x: auto; }
+
+/* as duas tabelas */
+.sources { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: start; }
+.on-col { align-self: center; text-align: center; color: var(--muted); font-size: 0.8rem; max-width: 120px; }
+.on-col .mono { display: block; color: var(--fg); font-weight: 600; margin-top: 4px; }
+.on-col .arrow { font-size: 1.6rem; color: var(--accent); line-height: 1; }
+.side-tag { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); margin-left: 8px; vertical-align: middle; }
+.side-tag.keep { background: var(--k1-soft); color: var(--k1); }
+table.data { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+table.data th { text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  padding: 6px 10px; border-bottom: 2px solid var(--line); font-weight: 600; white-space: nowrap; }
+table.data td { padding: 8px 10px; border-bottom: 1px solid var(--line); font-size: 0.92rem; transition: opacity .2s, background .2s; }
+table.data td.key { font-family: var(--font-mono); font-weight: 600; }
+tr.k1 td.key { color: var(--k1); }
+tr.k3 td.key { color: var(--k3); }
+tr.k1 td { background: var(--k1-soft); }
+tr.k3 td { background: var(--k3-soft); }
+tr.nopair td { background: var(--miss-soft); }
+tr.nopair td.key { color: var(--miss); }
+tr.out td { opacity: 0.38; }
+tr.out td:last-child::after { content: " — fica de fora"; font-size: 0.78rem; color: var(--miss); font-weight: 600; }
+tr.hl td { outline: 2px solid var(--accent); outline-offset: -2px; }
+.note { font-size: 0.8rem; color: var(--muted); margin: 8px 2px 0; }
+
+/* resultado */
+.summary { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.pill { font-size: 0.82rem; font-weight: 600; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line); }
+.pill.total { background: var(--accent); color: var(--surface); border-color: var(--accent); }
+.pill.m { background: var(--k1-soft); color: var(--k1); border-color: transparent; }
+.pill.l, .pill.r { background: var(--miss-soft); color: var(--miss); border-color: transparent; }
+td.null { color: var(--null); font-family: var(--font-mono); font-style: italic; background: var(--null-soft) !important; }
+td.why { font-size: 0.82rem; color: var(--muted); white-space: nowrap; }
+table.res tr { cursor: default; }
+table.res thead th.grp { text-align: center; border-bottom: 1px solid var(--line); color: var(--fg); }
+.hidden-res { text-align: center; padding: 26px 10px; color: var(--muted); }
+.btn { font: 600 0.92rem var(--font-body); padding: 9px 16px; border-radius: 9px; border: 1px solid var(--accent);
+  background: var(--accent); color: var(--surface); cursor: pointer; margin-top: 10px; }
+
+/* legenda */
+.legend { display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: 0.85rem; color: var(--muted); }
+.sw { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 6px; }
+
+@media (max-width: 760px) {
+  .sources { grid-template-columns: 1fr; }
+  .on-col { max-width: none; }
+  .on-col .arrow { transform: rotate(90deg); display: inline-block; }
+  h1 { font-size: 1.55rem; }
+}
+@media (prefers-reduced-motion: reduce) { table.data td { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Visualizador de JOIN</h1>
+    <p class="lead">Escolha o tipo de JOIN e a ordem das tabelas. Veja quais linhas de cada tabela entram no resultado, quais casam pelo <code>id_cliente</code> e quais ficam de fora. Dados reais do Exercício 08 (<code>exercicio_relacionamento</code>).</p>
+  </header>
+
+  <section class="controls" aria-label="Opções">
+    <div class="group">
+      <span class="label" id="lbl-tipo">Tipo de JOIN</span>
+      <div class="seg" role="group" aria-labelledby="lbl-tipo" id="tipo">
+        <button type="button" data-v="INNER" aria-pressed="true">INNER</button>
+        <button type="button" data-v="LEFT" aria-pressed="false">LEFT</button>
+        <button type="button" data-v="RIGHT" aria-pressed="false">RIGHT</button>
+        <button type="button" data-v="FULL" aria-pressed="false">FULL</button>
+      </div>
+    </div>
+    <div class="group">
+      <span class="label" id="lbl-ordem">Ordem (quem fica à esquerda)</span>
+      <div class="seg" role="group" aria-labelledby="lbl-ordem" id="ordem">
+        <button type="button" data-v="cp" aria-pressed="true">FROM cliente</button>
+        <button type="button" data-v="pc" aria-pressed="false">FROM pedido</button>
+      </div>
+    </div>
+    <label class="check" for="treino"><input type="checkbox" id="treino"> Modo treino: esconder o resultado para eu prever</label>
+  </section>
+
+  <section class="card">
+    <h2>O comando, traduzido</h2>
+    <pre class="sql" id="sql"></pre>
+    <div class="scroll"><table class="read" id="read"></table></div>
+  </section>
+
+  <section class="sources" aria-label="Tabelas de origem">
+    <div class="card" id="leftCard"></div>
+    <div class="on-col"><span class="arrow">⇄</span>ligadas pelo ON<span class="mono">id_cliente = id_cliente</span></div>
+    <div class="card" id="rightCard"></div>
+  </section>
+
+  <section class="card">
+    <h2>Resultado <span class="mono" style="font-weight:400;color:var(--muted)">(SELECT * — colunas das duas tabelas lado a lado)</span></h2>
+    <div id="result"></div>
+    <p class="note">Passe o mouse (ou toque) numa linha do resultado para ver de quais linhas das tabelas de cima ela veio.</p>
+  </section>
+
+  <section class="legend" aria-label="Legenda">
+    <span><span class="sw" style="background:var(--k1-soft);outline:2px solid var(--k1)"></span>casou pelo id_cliente 1</span>
+    <span><span class="sw" style="background:var(--k3-soft);outline:2px solid var(--k3)"></span>casou pelo id_cliente 3</span>
+    <span><span class="sw" style="background:var(--miss-soft);outline:2px solid var(--miss)"></span>sem par na outra tabela</span>
+    <span><span class="sw" style="background:var(--null-soft);outline:2px solid var(--null)"></span>NULL = vazio (o "#N/D" do PROCV)</span>
+  </section>
+</div>
+
+<script>
+(function () {
+  var cliente = [
+    { id_cliente: 1, nm_cliente: "HUGO DA SILVA MACHADO" },
+    { id_cliente: 2, nm_cliente: "TIAGO NUNES BERNARDO" },
+    { id_cliente: 3, nm_cliente: "SABRINA JOAQUINA SILVEIRA" }
+  ];
+  var pedido = [
+    { nr_pedido: 77895, id_cliente: 3 },
+    { nr_pedido: 44678, id_cliente: 3 },
+    { nr_pedido: 22456, id_cliente: 1 },
+    { nr_pedido: 24562, id_cliente: 1 },
+    { nr_pedido: 34764, id_cliente: 15 }
+  ];
+  var T = {
+    cliente: { nome: "cliente", ap: "c", rows: cliente, cols: ["id_cliente", "nm_cliente"], key: "id_cliente" },
+    pedido:  { nome: "pedido",  ap: "p", rows: pedido,  cols: ["nr_pedido", "id_cliente"], key: "id_cliente" }
+  };
+  var state = { tipo: "INNER", ordem: "cp", treino: false, revelado: false };
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function keyClass(k, temPar) { if (!temPar) return "nopair"; return k === 1 ? "k1" : k === 3 ? "k3" : ""; }
+
+  function calcular() {
+    var L = state.ordem === "cp" ? T.cliente : T.pedido;
+    var R = state.ordem === "cp" ? T.pedido : T.cliente;
+    var linhas = [], usadosR = {}, usadosL = {};
+    L.rows.forEach(function (l, li) {
+      var achou = false;
+      R.rows.forEach(function (r, ri) {
+        if (l[L.key] === r[R.key]) { achou = true; usadosR[ri] = 1; usadosL[li] = 1; linhas.push({ l: l, r: r, li: li, ri: ri, tipo: "m" }); }
+      });
+      if (!achou && (state.tipo === "LEFT" || state.tipo === "FULL")) { usadosL[li] = 1; linhas.push({ l: l, r: null, li: li, ri: -1, tipo: "l" }); }
+    });
+    if (state.tipo === "RIGHT" || state.tipo === "FULL") {
+      R.rows.forEach(function (r, ri) {
+        var temPar = L.rows.some(function (l) { return l[L.key] === r[R.key]; });
+        if (!temPar) { usadosR[ri] = 1; linhas.push({ l: null, r: r, li: -1, ri: ri, tipo: "r" }); }
+      });
+    }
+    return { L: L, R: R, linhas: linhas, usadosL: usadosL, usadosR: usadosR };
+  }
+
+  function temPar(row, tab, outra) { return outra.rows.some(function (o) { return o[outra.key] === row[tab.key]; }); }
+
+  function renderSQL(d) {
+    var j = state.tipo + " JOIN";
+    document.getElementById("sql").innerHTML =
+      '<span class="kw">SELECT</span> *\n' +
+      '<span class="kw">FROM</span> ' + d.L.nome + ' ' + d.L.ap + '\n' +
+      '<span class="kw">' + j + '</span> ' + d.R.nome + ' ' + d.R.ap +
+      ' <span class="kw">ON</span> (' + d.L.ap + '.id_cliente = ' + d.R.ap + '.id_cliente);';
+    var frase = {
+      INNER: "junte com " + d.R.nome.toUpperCase() + " e mantenha <b>só quem casou</b> nas duas",
+      LEFT: "junte com " + d.R.nome.toUpperCase() + " e mantenha <b>TODA a " + d.L.nome.toUpperCase() + "</b> (esquerda), mesmo sem par",
+      RIGHT: "junte com " + d.R.nome.toUpperCase() + " e mantenha <b>TODA a " + d.R.nome.toUpperCase() + "</b> (direita), mesmo sem par",
+      FULL: "junte com " + d.R.nome.toUpperCase() + " e mantenha <b>todo mundo dos dois lados</b>"
+    }[state.tipo];
+    document.getElementById("read").innerHTML =
+      "<tr><td>SELECT *</td><td>mostre todas as colunas das duas tabelas, lado a lado</td></tr>" +
+      "<tr><td>FROM " + d.L.nome + " " + d.L.ap + "</td><td>comece pela tabela " + d.L.nome.toUpperCase() + " — ela é a <b>esquerda</b>. O <code>" + d.L.ap + "</code> é o apelido dela</td></tr>" +
+      "<tr><td>" + j + " " + d.R.nome + " " + d.R.ap + "</td><td>" + frase + "</td></tr>" +
+      "<tr><td>ON (" + d.L.ap + ".id_cliente = " + d.R.ap + ".id_cliente)</td><td><b>ligando</b> onde o código do cliente for <b>igual</b> nas duas (a chave do PROCV)</td></tr>";
+  }
+
+  function renderFonte(cardId, tab, outra, usados, lado) {
+    var mantem = (state.tipo === "FULL") || (lado === "esq" && state.tipo === "LEFT") || (lado === "dir" && state.tipo === "RIGHT");
+    var h = '<h2>' + tab.nome.toUpperCase() + '<span class="side-tag' + (mantem ? ' keep' : '') + '">' +
+      (lado === "esq" ? "esquerda" : "direita") + (mantem ? " · aparece inteira" : "") + '</span></h2>';
+    h += '<div class="scroll"><table class="data"><thead><tr>';
+    tab.cols.forEach(function (c) { h += "<th>" + c + "</th>"; });
+    h += "</tr></thead><tbody>";
+    tab.rows.forEach(function (row, i) {
+      var par = temPar(row, tab, outra);
+      var cls = keyClass(row[tab.key], par) + (usados[i] ? "" : " out");
+      h += '<tr class="' + cls + '" data-src="' + lado + i + '">';
+      tab.cols.forEach(function (c) {
+        var v = row[c];
+        if (c === "id_cliente" && tab.nome === "pedido" && !par) v = v + " (não existe)";
+        h += '<td class="' + (c === tab.key ? "key" : "") + '">' + esc(v) + "</td>";
+      });
+      h += "</tr>";
+    });
+    h += "</tbody></table></div>";
+    var semPar = tab.rows.filter(function (r) { return !temPar(r, tab, outra); });
+    if (semPar.length) {
+      h += '<p class="note">Sem par: ' + semPar.map(function (r) { return tab.nome === "cliente" ? r.nm_cliente.split(" ")[0] + " (nenhum pedido aponta para ele)" : "pedido " + r.nr_pedido + " (cliente " + r.id_cliente + " não existe)"; }).join("; ") + ".</p>";
+    }
+    document.getElementById(cardId).innerHTML = h;
+  }
+
+  function renderResultado(d) {
+    var box = document.getElementById("result");
+    if (state.treino && !state.revelado) {
+      box.innerHTML = '<div class="hidden-res"><b>Antes de ver:</b> quantas linhas vão aparecer? Alguém vai ficar com NULL? Quem fica de fora?<br><button type="button" class="btn" id="revelar">Mostrar resultado</button></div>';
+      document.getElementById("revelar").addEventListener("click", function () { state.revelado = true; render(); });
+      return;
+    }
+    var m = d.linhas.filter(function (x) { return x.tipo === "m"; }).length;
+    var l = d.linhas.filter(function (x) { return x.tipo === "l"; }).length;
+    var r = d.linhas.filter(function (x) { return x.tipo === "r"; }).length;
+    var h = '<div class="summary"><span class="pill total">' + d.linhas.length + ' linhas</span><span class="pill m">' + m + ' casaram</span>';
+    if (l) h += '<span class="pill l">' + l + ' sobra da esquerda</span>';
+    if (r) h += '<span class="pill r">' + r + ' sobra da direita</span>';
+    h += "</div>";
+    h += '<div class="scroll"><table class="data res"><thead>';
+    h += '<tr><th class="grp" colspan="' + d.L.cols.length + '">vem de ' + d.L.nome.toUpperCase() + ' (' + d.L.ap + ')</th><th class="grp" colspan="' + d.R.cols.length + '">vem de ' + d.R.nome.toUpperCase() + ' (' + d.R.ap + ')</th><th></th></tr><tr>';
+    d.L.cols.forEach(function (c) { h += "<th>" + d.L.ap + "." + c + "</th>"; });
+    d.R.cols.forEach(function (c) { h += "<th>" + d.R.ap + "." + c + "</th>"; });
+    h += "<th>por quê</th></tr></thead><tbody>";
+    d.linhas.forEach(function (x) {
+      var k = x.l ? x.l[d.L.key] : x.r[d.R.key];
+      var cls = x.tipo === "m" ? keyClass(k, true) : "nopair";
+      h += '<tr class="' + cls + '" data-l="' + x.li + '" data-r="' + x.ri + '" tabindex="0">';
+      d.L.cols.forEach(function (c) { h += x.l ? '<td class="' + (c === d.L.key ? "key" : "") + '">' + esc(x.l[c]) + "</td>" : '<td class="null">NULL</td>'; });
+      d.R.cols.forEach(function (c) { h += x.r ? '<td class="' + (c === d.R.key ? "key" : "") + '">' + esc(x.r[c]) + "</td>" : '<td class="null">NULL</td>'; });
+      var why = x.tipo === "m" ? "casou (id " + k + " nas duas)" : x.tipo === "l" ? "sobra da esquerda: sem par, completa com NULL" : "sobra da direita: sem par, completa com NULL";
+      h += '<td class="why">' + why + "</td></tr>";
+    });
+    h += "</tbody></table></div>";
+    box.innerHTML = h;
+    box.querySelectorAll("tbody tr").forEach(function (tr) {
+      function on() { marcar(tr.dataset.l, tr.dataset.r, true); }
+      function off() { marcar(tr.dataset.l, tr.dataset.r, false); }
+      tr.addEventListener("mouseenter", on); tr.addEventListener("mouseleave", off);
+      tr.addEventListener("focus", on); tr.addEventListener("blur", off);
+      tr.addEventListener("touchstart", on, { passive: true });
+    });
+  }
+
+  function marcar(li, ri, ativo) {
+    document.querySelectorAll(".sources tr.hl").forEach(function (t) { t.classList.remove("hl"); });
+    if (!ativo) return;
+    if (li !== "-1") { var a = document.querySelector('[data-src="esq' + li + '"]'); if (a) a.classList.add("hl"); }
+    if (ri !== "-1") { var b = document.querySelector('[data-src="dir' + ri + '"]'); if (b) b.classList.add("hl"); }
+  }
+
+  function render() {
+    var d = calcular();
+    renderSQL(d);
+    renderFonte("leftCard", d.L, d.R, d.usadosL, "esq");
+    renderFonte("rightCard", d.R, d.L, d.usadosR, "dir");
+    renderResultado(d);
+  }
+
+  function seg(id, prop) {
+    var el = document.getElementById(id);
+    el.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      state[prop] = b.dataset.v; state.revelado = false;
+      el.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      render();
+    });
+  }
+  seg("tipo", "tipo"); seg("ordem", "ordem");
+  document.getElementById("treino").addEventListener("change", function (e) { state.treino = e.target.checked; state.revelado = false; render(); });
+  render();
+})();
+</script>
