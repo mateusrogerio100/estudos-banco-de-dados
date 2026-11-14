@@ -108,8 +108,11 @@
   ele tem mais dificuldade: JOIN ("entender aquilo está difícil").
   Ele aprende melhor VISUALIZANDO (tabelas lado a lado, linha por linha).
 - PLANO ACELERADO (definido em 14/11):
-    14/11 (sáb)  JOIN: INNER, LEFT, RIGHT, FULL - visual, com os dados de
-                 exercicio_relacionamento (cliente/pedido) + exercícios
+    14/11 (sáb)  JOIN: INNER, LEFT, RIGHT, FULL ............... FEITO
+                 (aula05_join/exercicios.sql, J1-J5 certos; capítulo JOIN no
+                 Word; VISUALIZADOR interativo publicado como artifact
+                 https://claude.ai/artifact/Dt4YT6xFBKRmqGRQszqJt8 ,
+                 arquivo visualizador/join.html - foi o que mais ajudou)
     15/11 (dom)  Chave estrangeira, alias (AS), JOIN com 3 tabelas
                  (aluno-matricula-curso), NATURAL/USING/CROSS (teoria);
                  resumo rápido da Aula 03 (constraints, ALTER TABLE)
@@ -118,6 +121,9 @@
 - Aula 03 (sequence/constraints/ALTER) foi entregue em 02/11, mas o Mateus
   só chegou a perguntar sobre CONSTRAINT nomeada (não criou nada no
   schema aula03). Será coberta de forma resumida no plano acelerado.
+- Erros do dia 14/11: esqueceu SET search_path; esqueceu ORDER BY do
+  enunciado; usou "= null" (certo: IS NULL). Ele pediu para pôr no Word a
+  tabela "como ler um JOIN frase por frase" -> esse formato funciona.
 - Dados para os JOINs (exercicio_relacionamento):
     cliente: 1 HUGO, 2 TIAGO (sem pedido), 3 SABRINA
     pedido : 77895 e 44678 -> cliente 3; 22456 e 24562 -> cliente 1;
