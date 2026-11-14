@@ -1,7 +1,7 @@
 =====================================================================
  CONTEXTO DO CURSO DE BANCO DE DADOS - MEMÓRIA PARA O CLAUDE
  (ler este arquivo no início de cada conversa ou depois de um /compact)
- Última atualização: 02/11/2026
+ Última atualização: 14/11/2026
 =====================================================================
 
 1. QUEM É O ALUNO
@@ -103,21 +103,25 @@
 
 6. ONDE PARAMOS / PENDÊNCIAS
 ---------------------------------------------------------------------
-- Última sessão: 02/11/2026. REVISÃO 1 CONCLUÍDA (5 exercícios; ver
-  revisao01/exercicios.sql). Nenhuma pendência das Aulas 01 e 02.
-  Estado do banco: revisao01.titulo com 5 títulos; aula01.receita criada (vazia).
-- AULA 03 ENTREGUE em 02/11 (aula03/teoria.md + 5 exercícios). Aguardando.
-  Tema: cadastro de fornecedores (aula03.seq_fornecedor + aula03.fornecedor).
-  Gabarito (testado no PostgreSQL):
-    Ex.2 o INSERT da 'Medsul Filial' falha: duplicate key ... uq_fornecedor_cnpj
-         (e gasta um número da sequence -> próximo id pula).
-    Ex.3 final: razao_social, cnpj, email (vazio), ativo (true); sem cidade.
-    Ex.4 erro: column "telefone" ... contains null values. Soluções: sem NOT
-         NULL, ou NOT NULL DEFAULT 'não informado'.
-    Ex.5c erro: could not create unique index "uq_fornecedor_cnpj"
-         (há CNPJ repetido). Apagar a filial e recriar funciona.
-  Observação: PostgreSQL PERMITE DROP COLUMN da coluna da PK (some a PK);
-  o slide diz que "atributos chave não podem ser removidos" -> regra conceitual.
+- *** PROVA MARCADA: 19/11/2026 (quinta). *** Mateus trabalha de dia e tem
+  outras provas à noite -> plano ACELERADO, foco no que mais cai e no que
+  ele tem mais dificuldade: JOIN ("entender aquilo está difícil").
+  Ele aprende melhor VISUALIZANDO (tabelas lado a lado, linha por linha).
+- PLANO ACELERADO (definido em 14/11):
+    14/11 (sáb)  JOIN: INNER, LEFT, RIGHT, FULL - visual, com os dados de
+                 exercicio_relacionamento (cliente/pedido) + exercícios
+    15/11 (dom)  Chave estrangeira, alias (AS), JOIN com 3 tabelas
+                 (aluno-matricula-curso), NATURAL/USING/CROSS (teoria);
+                 resumo rápido da Aula 03 (constraints, ALTER TABLE)
+    16-18/11     LISTA GRANDE de exercícios / simulado no ritmo dele
+                 (cobre tudo: DDL, DML, WHERE, ORDER BY, JOINs)
+- Aula 03 (sequence/constraints/ALTER) foi entregue em 02/11, mas o Mateus
+  só chegou a perguntar sobre CONSTRAINT nomeada (não criou nada no
+  schema aula03). Será coberta de forma resumida no plano acelerado.
+- Dados para os JOINs (exercicio_relacionamento):
+    cliente: 1 HUGO, 2 TIAGO (sem pedido), 3 SABRINA
+    pedido : 77895 e 44678 -> cliente 3; 22456 e 24562 -> cliente 1;
+             34764 -> cliente 15 (não existe; pedido órfão; sem FK)
 - Perguntas que o Mateus fez (já explicadas): diferença de SELECT * e
   SELECT colunas (* para olhar, lista para responder/entregar).
 - Dificuldades que apareceram (reforçar):
