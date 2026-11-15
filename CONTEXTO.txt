@@ -115,8 +115,9 @@
                  arquivo visualizador/join.html - foi o que mais ajudou)
     14/11 (tarde) Aula de FK + alias + JOIN 3 tabelas + resumo Aula 03
                  ENTREGUE (exercícios K1-K5 em
-                 aula05_join/exercicios_fk_alias_3tabelas.sql). PAROU AQUI:
-                 Mateus vai fazer K1-K5 no domingo 15/11.
+                 aula05_join/exercicios_fk_alias_3tabelas.sql).
+    15/11 (dom)  K1-K5 FEITOS (todos certos, alguns na 2ª tentativa).
+                 PRÓXIMO: LISTA GRANDE de exercícios / simulado (lista/).
                  Capítulo FK/alias/3 tabelas JÁ ESTÁ no Word (15/11). Sumário do
                  Word agora é uma lista fixa de links (o automático vinha vazio).
     15/11 (dom)  [era] Chave estrangeira, alias (AS), JOIN com 3 tabelas
@@ -127,6 +128,9 @@
 - Aula 03 (sequence/constraints/ALTER) foi entregue em 02/11, mas o Mateus
   só chegou a perguntar sobre CONSTRAINT nomeada (não criou nada no
   schema aula03). Será coberta de forma resumida no plano acelerado.
+- Erros do dia 15/11: SET search_path no schema errado; ordem dos JOINs
+  (usou apelido antes de apresentar a tabela); IS + aspas duplas no lugar
+  de = 'texto'; apelido de outro exercício no ON.
 - Erros do dia 14/11: esqueceu SET search_path; esqueceu ORDER BY do
   enunciado; usou "= null" (certo: IS NULL). Ele pediu para pôr no Word a
   tabela "como ler um JOIN frase por frase" -> esse formato funciona.

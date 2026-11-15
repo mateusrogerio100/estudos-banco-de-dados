@@ -462,6 +462,25 @@ JOIN curso c     ON (m.id_curso = c.id_curso);`),
     bullet('Em cada `ON`, uma das colunas é de uma tabela que **já apareceu antes** — você vai "andando" pelas pontes.'),
     bullet('Para manter quem **não tem par** (aluno sem curso), os **dois** JOINs precisam ser `LEFT`.'),
     bullet('Um aluno com 2 matrículas aparece em **2 linhas** — uma para cada par encontrado.'),
+
+    h2('4. Molde "quem NÃO tem" (LEFT JOIN + IS NULL)'),
+    ...codigo(`SELECT ...
+FROM   tabela_que_quero_inteira  x
+LEFT JOIN tabela_que_pode_faltar y ON (y.chave = x.chave)
+WHERE  y.chave IS NULL;`),
+    ...tabela(['Pergunta', 'No FROM', 'No LEFT JOIN'], [
+      ['Clientes que nunca compraram', 'cliente', 'pedido'],
+      ['Cursos sem aluno', 'curso', 'matricula'],
+      ['Alunos sem curso', 'aluno', 'matricula'],
+    ], [0.5, 0.25, 0.25]),
+
+    ...atencao('Erros desta parte (revise!)', [
+      'Usar um apelido **antes** de apresentar a tabela: `JOIN curso c ON (c.id_curso = m.id_curso)` antes do `JOIN matricula m` → *missing FROM-clause entry for table "m"*. As pontes vão **em ordem**.',
+      'Usar no `ON` o apelido de outro exercício (`a.id_curso` quando só existem `c` e `m`). Confira se **cada apelido** foi apresentado no FROM/JOIN.',
+      '`WHERE cidade IS "Franca"` → errado. `IS` é só para NULL; aspas **duplas** são para nome de coluna. Certo: `cidade = \'Franca\'`.',
+      '`DROP TABLE curso` com a matricula apontando para ela → **recusado**. Apague antes a filha (matricula) ou a FK (`ALTER TABLE ... DROP CONSTRAINT`).',
+      'Na prova não existe `SET search_path` — isso é só da organização no Supabase.',
+    ]),
   ],
 ];
 
