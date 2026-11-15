@@ -117,7 +117,8 @@
                  ENTREGUE (exercícios K1-K5 em
                  aula05_join/exercicios_fk_alias_3tabelas.sql). PAROU AQUI:
                  Mateus vai fazer K1-K5 no domingo 15/11.
-                 Depois: pôr o capítulo FK/alias/3 tabelas no Word.
+                 Capítulo FK/alias/3 tabelas JÁ ESTÁ no Word (15/11). Sumário do
+                 Word agora é uma lista fixa de links (o automático vinha vazio).
     15/11 (dom)  [era] Chave estrangeira, alias (AS), JOIN com 3 tabelas
                  (aluno-matricula-curso), NATURAL/USING/CROSS (teoria);
                  resumo rápido da Aula 03 (constraints, ALTER TABLE)

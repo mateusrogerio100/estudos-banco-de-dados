@@ -5,7 +5,7 @@ const path = require('path');
 const {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, HeadingLevel,
   AlignmentType, WidthType, ShadingType, BorderStyle, LevelFormat, PageBreak,
-  TableOfContents, Footer, PageNumber,
+  TableOfContents, Footer, PageNumber, Bookmark, InternalHyperlink,
 } = require('docx');
 
 const AZUL = '1F4E79';
@@ -26,7 +26,13 @@ function runs(texto) {
     return new TextRun(t);
   });
 }
-const h1 = (t, novaPagina) => new Paragraph({ heading: HeadingLevel.HEADING_1, pageBreakBefore: !!novaPagina, children: [new TextRun(t)] });
+const CAPITULOS = [];
+const h1 = (t, novaPagina) => {
+  const id = 'cap' + (CAPITULOS.length + 1);
+  CAPITULOS.push({ id, t });
+  return new Paragraph({ heading: HeadingLevel.HEADING_1, pageBreakBefore: !!novaPagina,
+    children: [new Bookmark({ id, children: [new TextRun(t)] })] });
+};
 const h2 = t => new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun(t)] });
 const bullet = t => new Paragraph({ numbering: { reference: 'bolinhas', level: 0 }, spacing: { after: 60 }, children: runs(t) });
 
@@ -402,11 +408,65 @@ INNER JOIN pedido ON (pedido.id_cliente = cliente.id_cliente);`),
       'LEFT e RIGHT são espelhos: `FROM cliente LEFT JOIN pedido` = `FROM pedido RIGHT JOIN cliente`.',
       'Achar quem **não tem par**: LEFT JOIN + `WHERE coluna_da_direita IS NULL`.',
       'No Supabase, tabelas fora do `public` precisam do `SET search_path TO schema;` **no topo do bloco** (ou o nome completo `schema.tabela`). Sem isso: *relation does not exist*.',
+      'Para testar vazio use **`IS NULL`** / **`IS NOT NULL`**. `= NULL` não dá erro, mas **nunca encontra nada** (NULL = "desconhecido").',
     ]),
+  ],
+
+  () => [
+    h1('Chave estrangeira, alias e JOIN com 3 tabelas', true),
+
+    h2('1. Chave estrangeira (FOREIGN KEY)'),
+    p('Regra gravada **na tabela**: a coluna só aceita valores que existem na chave primária de outra tabela. Como o **plano de contas**: não se lança em conta que não existe, nem se exclui conta com lançamentos.'),
+    ...codigo(`CREATE TABLE funcionario (
+  id_funcionario INTEGER DEFAULT NEXTVAL('seq_funcionario'),
+  id_cargo       INTEGER NOT NULL,
+  nome           VARCHAR(40) NOT NULL,
+  PRIMARY KEY (id_funcionario),
+  FOREIGN KEY (id_cargo) REFERENCES cargo (id_cargo)
+);`),
+    ...tabela(['Parte', 'Em português'], [
+      ['`FOREIGN KEY (id_cargo)`', 'a coluna id_cargo **desta** tabela é chave estrangeira...'],
+      ['`REFERENCES cargo (id_cargo)`', '...e aponta para a coluna id_cargo da tabela **CARGO**'],
+    ], [0.42, 0.58]),
+    ...tabela(['Tentativa', 'Sem FK', 'Com FK'], [
+      ['Inserir funcionário com `id_cargo = 99` (não existe)', 'aceita (vira órfão)', '**recusa**'],
+      ['Apagar um cargo que tem funcionários', 'apaga (funcionários órfãos)', '**recusa**'],
+      ['`DROP TABLE cargo`', 'apaga', '**recusa** (funcionario depende dela)'],
+    ], [0.46, 0.27, 0.27]),
+    bullet('**Ordem:** criar/inserir primeiro a tabela "pai" (cargo), depois a "filha" (funcionario). Para apagar, o contrário.'),
+    bullet('Com FK, nunca existe "pedido sem cliente" — o RIGHT JOIN só acha órfãos quando não há FK.'),
+
+    h2('2. Alias (apelidos)'),
+    ...codigo(`SELECT f.nome, c.descricao, c.valor AS salario
+FROM funcionario f
+JOIN cargo c ON (f.id_cargo = c.id_cargo);`),
+    ...tabela(['Tipo', 'Onde fica', 'Para quê'], [
+      ['**De tabela** (`funcionario f`)', 'no FROM e no JOIN', 'encurtar o nome da tabela: `f.nome` = nome **da funcionario**'],
+      ['**De coluna** (`valor AS salario`)', 'no SELECT', 'mudar o **título** da coluna no resultado'],
+    ], [0.32, 0.22, 0.46]),
+    bullet('Coluna que existe nas duas tabelas (`id_cargo`) **precisa** do prefixo, senão: *column reference is ambiguous*.'),
+    bullet('Cuidado: `SELECT fornecedor valor` (sem vírgula) cria um apelido sem querer — `valor` vira o título da coluna fornecedor.'),
+
+    h2('3. JOIN com 3 tabelas (tabela associativa)'),
+    p('Aluno faz vários cursos e curso tem vários alunos: a tabela **MATRICULA** fica no meio guardando os pares (chave primária **composta** `(ra, id_curso)` + 2 chaves estrangeiras). O caminho é **aluno → matrícula → curso**: dois JOINs, um para cada ponte.'),
+    ...codigo(`SELECT a.nome, c.nome_curso, m.periodo
+FROM aluno a
+JOIN matricula m ON (a.ra = m.ra)
+JOIN curso c     ON (m.id_curso = c.id_curso);`),
+    ...tabela(['Parte', 'Em português'], [
+      ['`FROM aluno a`', 'comece pelos ALUNOS'],
+      ['`JOIN matricula m ON (a.ra = m.ra)`', '**1ª ponte:** ache as matrículas de cada aluno (pelo RA)'],
+      ['`JOIN curso c ON (m.id_curso = c.id_curso)`', '**2ª ponte:** ache o nome do curso de cada matrícula'],
+    ], [0.48, 0.52]),
+    bullet('É um **PROCV encadeado**: busca o id_curso na matrícula, depois o nome no curso.'),
+    bullet('Em cada `ON`, uma das colunas é de uma tabela que **já apareceu antes** — você vai "andando" pelas pontes.'),
+    bullet('Para manter quem **não tem par** (aluno sem curso), os **dois** JOINs precisam ser `LEFT`.'),
+    bullet('Um aluno com 2 matrículas aparece em **2 linhas** — uma para cada par encontrado.'),
   ],
 ];
 
 // ---------- documento ----------
+const CONTEUDO = AULAS.flatMap(a => a());   // monta antes, para o sumário conhecer os capítulos
 const doc = new Document({
   creator: 'Mateus Rogério de Souza',
   title: 'Resumo — Banco de Dados',
@@ -420,7 +480,6 @@ const doc = new Document({
     ],
   },
   numbering: { config: [{ reference: 'bolinhas', levels: [{ level: 0, format: LevelFormat.BULLET, text: '•', alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 540, hanging: 270 } } } }] }] },
-  features: { updateFields: true },
   sections: [{
     properties: { page: { margin: { top: 1134, bottom: 1134, left: 1440, right: 1440 } } },
     footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ children: ['Página ', PageNumber.CURRENT], size: 18, color: '808080' })] })] }) },
@@ -429,9 +488,11 @@ const doc = new Document({
       new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 80 }, children: [new TextRun({ text: 'Banco de Dados — PostgreSQL / Supabase', size: 28 })] }),
       new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 400 }, children: [new TextRun({ text: 'Mateus Rogério de Souza', italics: true, color: '595959' })] }),
       new Paragraph({ children: [new TextRun({ text: 'Sumário', bold: true, size: 28, color: AZUL })] }),
-      new TableOfContents('Sumário', { hyperlink: true, headingStyleRange: '1-2' }),
+      ...CAPITULOS.map(c => new Paragraph({ spacing: { after: 100 }, indent: { left: 200 },
+        children: [new InternalHyperlink({ anchor: c.id, children: [new TextRun({ text: c.t, color: '2E75B6', underline: {} })] })] })),
+      new Paragraph({ spacing: { before: 160 }, indent: { left: 200 }, children: [new TextRun({ text: 'Clique no nome do capítulo para ir direto até ele (no Word: Ctrl + clique).', italics: true, size: 18, color: '808080' })] }),
       new Paragraph({ children: [new PageBreak()] }),
-      ...AULAS.flatMap(a => a()),
+      ...CONTEUDO,
     ],
   }],
 });
