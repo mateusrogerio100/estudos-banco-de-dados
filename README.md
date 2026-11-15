@@ -28,6 +28,10 @@ Em cada pasta:
 |---|---|
 | [professor/exercicio08.sql](professor/exercicio08.sql) | Chave estrangeira, JOIN / LEFT / RIGHT / FULL, ALTER TABLE, ORDER BY, alias |
 
+## Lista de exercícios para a prova
+
+[Lista_Exercicios_Prova.docx](Lista_Exercicios_Prova.docx): 40 questões (clínica médica). Gabarito: [lista/gabarito.sql](lista/gabarito.sql) — só depois de tentar!
+
 ## Visualizador de JOIN
 
 [visualizador/join.html](visualizador/join.html): página interativa que mostra cliente × pedido e o resultado de cada tipo de JOIN.

@@ -117,7 +117,14 @@
                  ENTREGUE (exercícios K1-K5 em
                  aula05_join/exercicios_fk_alias_3tabelas.sql).
     15/11 (dom)  K1-K5 FEITOS (todos certos, alguns na 2ª tentativa).
-                 PRÓXIMO: LISTA GRANDE de exercícios / simulado (lista/).
+                 LISTA GRANDE ENTREGUE (15/11): Lista_Exercicios_Prova.docx
+                 (gerada por ferramentas/gerar_lista.js), 40 questões em 7
+                 partes (A estrutura, B insert, C select, D update/delete,
+                 E alter, F JOINs, G caça aos erros). Tema: clínica
+                 (especialidade, medico, paciente, consulta), schema "lista".
+                 Gabarito TESTADO: lista/gabarito.sql (resultados esperados
+                 comentados). Mateus faz no ritmo dele entre 15 e 18/11;
+                 corrigir conferindo o schema lista no Supabase.
                  Capítulo FK/alias/3 tabelas JÁ ESTÁ no Word (15/11). Sumário do
                  Word agora é uma lista fixa de links (o automático vinha vazio).
     15/11 (dom)  [era] Chave estrangeira, alias (AS), JOIN com 3 tabelas
