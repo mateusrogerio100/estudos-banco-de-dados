@@ -135,6 +135,18 @@
 - Aula 03 (sequence/constraints/ALTER) foi entregue em 02/11, mas o Mateus
   só chegou a perguntar sobre CONSTRAINT nomeada (não criou nada no
   schema aula03). Será coberta de forma resumida no plano acelerado.
+- 16-17/11: Mateus fez a lista no schema revisao02 (em vez de "lista").
+  Partes A a D conferidas e certas; estava na Parte F (Q36 corrigida:
+  especialidade liga pelo MEDICO, e LEFT para não perder o Otávio).
+- 18/11 (véspera da prova): professor também deu funções de agregação.
+  Aula de COUNT/SUM/AVG/MIN/MAX + GROUP BY + HAVING entregue no chat com
+  6 exercícios (A1-A6) usando revisao02; capítulo novo no Word.
+  Resultados esperados (revisao02): 6 consultas, total 1910, média 318,33,
+  min 250, max 400; pagas 4 = 1380, não pagas 2 = 530; por médico: Paulo
+  2/700, Carla 2/560, Rafael 1/400, Otávio 1/250; HAVING >500: Paulo, Carla;
+  pacientes por cidade: Franca 3, Batatais 1, Ribeirão Preto 1;
+  médicos por especialidade (LEFT, COUNT(m.id_medico)): Cardio 2, Derm 0,
+  Orto 1, Pedi 1; pacientes com mais de 1 consulta: Marcos, Pedro (2 cada).
 - Erros do dia 15/11: SET search_path no schema errado; ordem dos JOINs
   (usou apelido antes de apresentar a tabela); IS + aspas duplas no lugar
   de = 'texto'; apelido de outro exercício no ON.

@@ -482,6 +482,49 @@ WHERE  y.chave IS NULL;`),
       'Na prova não existe `SET search_path` — isso é só da organização no Supabase.',
     ]),
   ],
+
+  () => [
+    h1('Funções de agregação: COUNT, SUM, AVG, MIN, MAX', true),
+    p('Funções que **resumem várias linhas em um número** — como o "Total" no rodapé de um relatório, ou a barra de status do Excel (Soma, Média, Contagem).'),
+    ...tabela(['Função', 'Faz', 'Exemplo (consultas da lista)'], [
+      ['`COUNT(*)`', 'conta **linhas**', '6 consultas'],
+      ['`COUNT(coluna)`', 'conta valores **não vazios** daquela coluna', '`COUNT(id_especialidade)` = 4 (Otávio é NULL)'],
+      ['`SUM(coluna)`', 'soma', '1910,00'],
+      ['`AVG(coluna)`', 'média', '318,33'],
+      ['`MIN(coluna)` / `MAX(coluna)`', 'menor / maior (também datas e textos)', '250,00 / 400,00'],
+    ], [0.27, 0.37, 0.36]),
+    ...codigo(`SELECT COUNT(*) AS qtd, SUM(valor) AS total, AVG(valor) AS media
+FROM consulta
+WHERE pago = TRUE;          -- o WHERE filtra ANTES de somar`),
+
+    h2('GROUP BY — um total por grupo (subtotais)'),
+    p('Sem GROUP BY sai **1 linha** (total geral). Com GROUP BY sai **1 linha por grupo** — como uma **tabela dinâmica** do Excel.'),
+    ...codigo(`SELECT m.nome AS medico, COUNT(*) AS qtd, SUM(c.valor) AS total
+FROM consulta c
+JOIN medico m ON (m.id_medico = c.id_medico)
+GROUP BY m.nome
+ORDER BY total DESC;`),
+    ...tabela(['medico', 'qtd', 'total'], [
+      ['Dr. Paulo Mendes', '2', '700,00'], ['Dra. Carla Reis', '2', '560,00'],
+      ['Dr. Rafael Lima', '1', '400,00'], ['Dr. Otávio Prado', '1', '250,00'],
+    ], [0.5, 0.2, 0.3]),
+    bullet('**Regra de ouro:** toda coluna do SELECT que **não** está dentro de uma função **tem que estar no GROUP BY**. Senão: *must appear in the GROUP BY clause*.'),
+
+    h2('HAVING — filtrar os grupos'),
+    ...tabela(['', 'WHERE', 'HAVING'], [
+      ['Filtra', '**linhas**, antes de agrupar', '**grupos**, depois de agrupar'],
+      ['Pode usar SUM/COUNT?', '**não**', '**sim**'],
+      ['Exemplo', '`WHERE pago = TRUE`', '`HAVING SUM(valor) > 500`'],
+    ], [0.26, 0.37, 0.37]),
+    p('**Ordem das cláusulas:** `SELECT` → `FROM` → `JOIN` → `WHERE` → `GROUP BY` → `HAVING` → `ORDER BY`.'),
+
+    ...atencao('Pegadinhas de agregação', [
+      'Coluna no SELECT fora de função e fora do GROUP BY → erro.',
+      '`WHERE SUM(valor) > 500` → erro. Filtro com função vai no **HAVING**.',
+      '`COUNT(*)` conta linhas; `COUNT(coluna)` **ignora NULL**. SUM/AVG/MIN/MAX também ignoram NULL.',
+      'Contar quem tem zero (especialidade sem médico): **LEFT JOIN** + `COUNT(m.id_medico)` (não `COUNT(*)`, que contaria 1).',
+    ]),
+  ],
 ];
 
 // ---------- documento ----------
